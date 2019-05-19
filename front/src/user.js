@@ -14,4 +14,8 @@ export default class user {
   setColor(color) {
     this.color = color
   }
+
+  setName(name) {
+    this.name = name
+  }
 }
