@@ -2,12 +2,14 @@ import * as p5 from 'p5'
 import io from 'socket.io-client'
 let socket
 
+let users = []
 const P5 = new p5(sk => {
   sk.setup = () => {
     sk.createCanvas(640, 480)
     socket = io.connect('http://localhost:3000')
-    // socket.on('mouse', otherDrawing)
-    // socket.on('texte', otherTyped)
+    socket.on('users', data => {
+      users = [...data]
+    })
   }
 
   sk.draw = () => {
@@ -19,7 +21,14 @@ const P5 = new p5(sk => {
       x: sk.mouseX,
       y: sk.mouseY
     }
+    // setTimeout(() => {
     socket.emit('mouse', data)
+    // }, 500)
+    // console.log(users)
+    users.forEach(u => {
+      sk.ellipse(u.x, u.y, 25, 25)
+      sk.text(u.id, u.x, u.y)
+    })
   }
   //
   // function otherDrawing(data) {
