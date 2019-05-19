@@ -1,11 +1,18 @@
 import * as p5 from 'p5'
 import io from 'socket.io-client'
+import { get } from 'lodash'
 let socket
-
+let color
 let users = []
+
 const P5 = new p5(sk => {
   sk.setup = () => {
     sk.createCanvas(640, 480)
+    color = {
+      red: sk.random(0, 255),
+      green: sk.random(0, 255),
+      blue: sk.random(0, 255)
+    }
     socket = io.connect('http://localhost:3000')
     socket.on('users', data => {
       users = [...data]
@@ -15,19 +22,21 @@ const P5 = new p5(sk => {
   sk.draw = () => {
     sk.background(255)
     sk.noStroke()
-    sk.fill(200, 0, 200)
+    sk.fill(color.red, color.green, color.blue)
     sk.ellipse(sk.mouseX, sk.mouseY, 25, 25)
     const data = {
       x: sk.mouseX,
-      y: sk.mouseY
+      y: sk.mouseY,
+      color
     }
     // setTimeout(() => {
     socket.emit('mouse', data)
     // }, 500)
     // console.log(users)
     users.forEach(u => {
+      sk.fill(u.color.red, u.color.green, u.color.blue)
       sk.ellipse(u.x, u.y, 25, 25)
-      sk.text(u.id, u.x, u.y)
+      sk.text(u.id, u.x + 10, u.y + 10)
     })
   }
   //
