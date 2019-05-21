@@ -14,6 +14,7 @@ io.on('connection', socket => {
   socket.on('user connects', data => {
     console.log('connect', socket.id)
     users[socket.id] = { ...data, id: socket.id }
+    socket.emit('send user own id', socket.id)
   })
 
   socket.on('user moves', data => {

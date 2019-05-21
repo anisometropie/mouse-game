@@ -24,6 +24,9 @@ const P5 = new p5(sk => {
     socket.on('users', data => {
       users = [...data]
     })
+    socket.on('send user own id', data => {
+      user.id = data
+    })
   }
 
   sk.draw = () => {
@@ -37,10 +40,12 @@ const P5 = new p5(sk => {
       name: sk.select('#userName').value()
     }
     socket.emit('user moves', data)
-    users.forEach(u => {
-      sk.fill(u.color.red, u.color.green, u.color.blue)
-      sk.ellipse(u.x, u.y, 25, 25)
-      sk.text(u.name, u.x + 12, u.y + 18)
-    })
+    users
+      .filter(u => u.id !== user.id)
+      .forEach(u => {
+        sk.fill(u.color.red, u.color.green, u.color.blue)
+        sk.ellipse(u.x, u.y, 25, 25)
+        sk.text(u.name, u.x + 12, u.y + 18)
+      })
   }
 })
