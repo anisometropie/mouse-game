@@ -11,7 +11,11 @@ let user
 let users = []
 const P5 = new p5(sk => {
   sk.setup = () => {
-    const canvas = sk.createCanvas(640, 480)
+    const canvasWidth = window.innerWidth - 100
+    const canvas = sk.createCanvas(
+      canvasWidth,
+      Math.min((canvasWidth * 3) / 4, 850)
+    )
     canvas.parent(sk.select('#canvas'))
     user = new User('unamed', {
       red: sk.random(0, 255),
