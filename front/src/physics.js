@@ -13,11 +13,11 @@ const distance = (a, b) => {
 const vectorLength = v => distance({ x: 0, y: 0 }, v)
 
 export const isPointInRectangle = (point, rectangle) => {
-  //  A          B
-  //
-  //     P
-  //
-  //  D          C
+  //  A—————————————B
+  //  |             |
+  //  |  P          |
+  //  |             |
+  //  D—————————————C
   const { A, B, C, D } = rectangle.vertices
   const AP = vectorFromPoints(A, point)
   const AB = vectorFromPoints(A, B)
@@ -42,7 +42,7 @@ export const segmentIntersectsCircle = (segment, circle) => {
   //
   const AB = vectorFromPoints(segment[0], segment[1])
   const AC = vectorFromPoints(segment[0], circle.coords)
-  // is center of circle projection inside segment ?
+  // is D inside segment ?
   if (0 <= dotProduct(AC, AB) && dotProduct(AC, AB) <= dotProduct(AB, AB)) {
     const distAD = dotProduct(AC, AB) / vectorLength(AB)
     const theta = Math.acos(distAD / vectorLength(AC))
