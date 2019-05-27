@@ -8,12 +8,12 @@ class Rectangle {
 
   get vertices() {
     const { x, y, width, height } = this
-    return [
-      { x, y },
-      { x: x + width, y },
-      { x: x + width, y: y + height },
-      { x, y: y + height }
-    ]
+    return {
+      A: { x, y },
+      B: { x: x + width, y },
+      C: { x: x + width, y: y + height },
+      D: { x, y: y + height }
+    }
   }
 
   display(ctx) {

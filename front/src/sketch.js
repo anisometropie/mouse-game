@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import { get, random } from 'lodash'
 import { getMousePos } from './utils'
-import { isPointInRectangle } from './physics'
+import { circleIntersectsRectangle, segmentIntersectsCircle } from './physics'
 
 import Rectangle from './Rectangle'
 import User from './user'
@@ -48,7 +48,7 @@ function mouseMoved(event) {
 
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
-  ctx.fillStyle = isPointInRectangle(user.coords, rectangle) ? 'green' : 'red'
+  ctx.fillStyle = circleIntersectsRectangle(user, rectangle) ? 'green' : 'red'
   rectangle.display(ctx)
   user.display(ctx, false)
   users

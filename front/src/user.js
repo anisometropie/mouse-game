@@ -8,9 +8,10 @@ function rgbToHex(r, g, b) {
 }
 
 export default class user {
-  constructor(name, color, x = 0, y = 0) {
+  constructor(name, color, x = 0, y = 0, radius = 12) {
     this.x = x
     this.y = y
+    this.radius = radius
     this.name = name
     this.color = color
   }
@@ -35,12 +36,12 @@ export default class user {
   display(ctx, withName = false) {
     const { red, green, blue } = this.color
     ctx.beginPath()
-    ctx.arc(this.x, this.y, 12, 0, Math.PI * 2)
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
     ctx.fillStyle = rgbToHex(red, green, blue)
     ctx.fill()
     ctx.closePath()
     if (withName) {
-      ctx.fillText(this.name, this.x + 12, this.y + 18)
+      ctx.fillText(this.name, this.x + this.radius, this.y + this.radius * 1.5)
     }
   }
 }
