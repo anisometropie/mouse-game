@@ -4,7 +4,7 @@ function componentToHex(c) {
 }
 
 function rgbToHex(r, g, b) {
-  return `#${componentToHex(r)}${componentToHex(g)}{$componentToHex(b)}`
+  return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
 }
 
 export default class user {
@@ -18,6 +18,10 @@ export default class user {
   move(x, y) {
     this.x = x
     this.y = y
+  }
+
+  get coords() {
+    return { x: this.x, y: this.y }
   }
 
   setColor(color) {

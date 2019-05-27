@@ -1,6 +1,8 @@
 import io from 'socket.io-client'
 import { get, random } from 'lodash'
 import { getMousePos } from './utils'
+import { isPointInRectangle } from './physics'
+
 import Rectangle from './Rectangle'
 import User from './user'
 
@@ -12,6 +14,7 @@ const color = {
 }
 const user = new User('unamed', color)
 let users = []
+const rectangle = new Rectangle(100, 100, 100, 100)
 
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
@@ -45,6 +48,8 @@ function mouseMoved(event) {
 
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
+  ctx.fillStyle = isPointInRectangle(user.coords, rectangle) ? 'green' : 'red'
+  rectangle.display(ctx)
   user.display(ctx, false)
   users
     .filter(u => u.id !== user.id)
@@ -52,3 +57,4 @@ function draw() {
       u.display(ctx, true)
     })
 }
+window.requestAnimationFrame(draw)

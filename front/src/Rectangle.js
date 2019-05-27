@@ -1,5 +1,3 @@
-import { ctx } from './sketch.js'
-
 class Rectangle {
   constructor(x, y, width, height) {
     this.x = x
@@ -18,7 +16,7 @@ class Rectangle {
     ]
   }
 
-  display() {
+  display(ctx) {
     const { x, y, width, height } = this
     ctx.fillRect(x, y, width, height)
   }
