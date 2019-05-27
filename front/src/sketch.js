@@ -1,55 +1,54 @@
-import * as p5 from 'p5'
-import 'p5/lib/addons/p5.dom'
 import io from 'socket.io-client'
-import { get } from 'lodash'
-let socket
-
+import { get, random } from 'lodash'
+import { getMousePos } from './utils'
+import Rectangle from './Rectangle'
 import User from './user'
+
 let userNameInput
-let color
-let user
+const color = {
+  red: random(0, 255),
+  green: random(0, 255),
+  blue: random(0, 255)
+}
+const user = new User('unamed', color)
 let users = []
-const P5 = new p5(sk => {
-  sk.setup = () => {
-    const canvasWidth = window.innerWidth - 100
-    const canvas = sk.createCanvas(
-      canvasWidth,
-      Math.min((canvasWidth * 3) / 4, 850)
-    )
-    canvas.parent(sk.select('#canvas'))
-    user = new User('unamed', {
-      red: sk.random(0, 255),
-      green: sk.random(0, 255),
-      blue: sk.random(0, 255)
-    })
 
-    socket = io.connect('http://localhost:3000')
-    socket.emit('user connects', user)
-    socket.on('users', data => {
-      users = [...data]
-    })
-    socket.on('send user own id', data => {
-      user.id = data
-    })
-  }
-
-  sk.draw = () => {
-    sk.background(255)
-    sk.noStroke()
-    sk.fill(user.color.red, user.color.green, user.color.blue)
-    sk.ellipse(sk.mouseX, sk.mouseY, 25, 25)
-    const data = {
-      x: sk.mouseX,
-      y: sk.mouseY,
-      name: sk.select('#userName').value()
-    }
-    socket.emit('user moves', data)
-    users
-      .filter(u => u.id !== user.id)
-      .forEach(u => {
-        sk.fill(u.color.red, u.color.green, u.color.blue)
-        sk.ellipse(u.x, u.y, 25, 25)
-        sk.text(u.name, u.x + 12, u.y + 18)
-      })
-  }
+const socket = io.connect('http://localhost:3000')
+socket.emit('user connects', user)
+socket.on('users', data => {
+  users = data.map(d => new User(d.name, d.color, d.x, d.y))
+  window.requestAnimationFrame(draw)
 })
+socket.on('send user own id', data => {
+  user.id = data
+})
+
+const WIDTH = window.innerWidth
+const HEIGHT = window.innerHeight
+const canvas = document.getElementById('canvas')
+export const ctx = canvas.getContext('2d')
+canvas.setAttribute('width', WIDTH)
+canvas.setAttribute('height', HEIGHT)
+canvas.addEventListener('mousemove', mouseMoved)
+
+function mouseMoved(event) {
+  const { x, y } = getMousePos(canvas, event)
+  user.move(x, y)
+  const data = {
+    x,
+    y,
+    name: document.getElementById('userName').value
+  }
+  socket.emit('user moves', data)
+  window.requestAnimationFrame(draw)
+}
+
+function draw() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT)
+  user.display(ctx, false)
+  users
+    .filter(u => u.id !== user.id)
+    .forEach(u => {
+      u.display(ctx, true)
+    })
+}
