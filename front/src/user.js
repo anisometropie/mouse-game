@@ -17,6 +17,11 @@ export default class user {
   }
 
   move(x, y) {
+    this.x += x
+    this.y += y
+  }
+
+  moveTo(x, y) {
     this.x = x
     this.y = y
   }

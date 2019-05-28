@@ -6,6 +6,8 @@ import { circleIntersectsRectangle, segmentIntersectsCircle } from './physics'
 import Rectangle from './Rectangle'
 import User from './user'
 
+const pixelRatio = get(window, 'devicePixelRatio', 1)
+
 let userNameInput
 const color = {
   red: random(0, 255),
@@ -32,7 +34,25 @@ const canvas = document.getElementById('canvas')
 export const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', WIDTH)
 canvas.setAttribute('height', HEIGHT)
-canvas.addEventListener('mousemove', mouseMoved)
+
+canvas.requestPointerLock =
+  canvas.requestPointerLock || canvas.mozRequestPointerLock
+document.exitPointerLock =
+  document.exitPointerLock || document.mozExitPointerLock
+canvas.onclick = canvas.requestPointerLock
+document.addEventListener('pointerlockchange', lockChangeAlert, false)
+document.addEventListener('mozpointerlockchange', lockChangeAlert, false)
+
+function lockChangeAlert() {
+  if (
+    document.pointerLockElement === canvas ||
+    document.mozPointerLockElement === canvas
+  ) {
+    document.addEventListener('mousemove', mouseMoved, false)
+  } else {
+    document.removeEventListener('mousemove', mouseMoved, false)
+  }
+}
 
 function mouseMoved(event) {
   const { x, y } = getMousePos(canvas, event)
