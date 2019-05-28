@@ -12,10 +12,10 @@ export const isPointInRectangle = (point, rectangle) => {
   const AB = Vector.fromPoints(A, B)
   const AD = Vector.fromPoints(A, D)
   return (
-    0 <= AP.dot(AB) &&
-    AP.dot(AB) <= AB.dot(AB) &&
-    0 <= AP.dot(AD) &&
-    AP.dot(AD) <= AD.dot(AD)
+    0 <= AP.dotProduct(AB) &&
+    AP.dotProduct(AB) <= AB.dotProduct(AB) &&
+    0 <= AP.dotProduct(AD) &&
+    AP.dotProduct(AD) <= AD.dotProduct(AD)
   )
 }
 
@@ -32,8 +32,8 @@ export const segmentIntersectsCircle = (segment, circle) => {
   const AB = Vector.fromPoints(segment[0], segment[1])
   const AC = Vector.fromPoints(segment[0], circle.coords)
   // is D inside segment ?
-  if (0 <= AC.dot(AB) && AC.dot(AB) <= AB.dot(AB)) {
-    const distAD = AC.dot(AB) / AB.length
+  if (0 <= AC.dotProduct(AB) && AC.dotProduct(AB) <= AB.dotProduct(AB)) {
+    const distAD = AC.dotProduct(AB) / AB.length
     const theta = Math.acos(distAD / AC.length)
     const distCD = distAD === 0 ? AC.length : Math.tan(theta) * distAD
     return distCD <= circle.radius
