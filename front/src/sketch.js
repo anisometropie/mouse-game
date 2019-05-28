@@ -55,11 +55,25 @@ function lockChangeAlert() {
 }
 
 function mouseMoved(event) {
-  const { x, y } = getMousePos(canvas, event)
-  user.move(x, y)
+  const { radius } = user
+  let newX = user.coords.x + event.movementX / pixelRatio
+  let newY = user.coords.y + event.movementY / pixelRatio
+  if (newX > WIDTH - radius) {
+    newX = WIDTH - radius
+  }
+  if (newX < radius) {
+    newX = radius
+  }
+  if (newY > HEIGHT - radius) {
+    newY = HEIGHT - radius
+  }
+  if (newY < radius) {
+    newY = radius
+  }
+  user.moveTo(newX, newY)
   const data = {
-    x,
-    y,
+    newX,
+    newY,
     name: document.getElementById('userName').value
   }
   socket.emit('user moves', data)

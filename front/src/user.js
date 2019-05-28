@@ -8,7 +8,7 @@ function rgbToHex(r, g, b) {
 }
 
 export default class user {
-  constructor(name, color, x = 0, y = 0, radius = 12) {
+  constructor(name, color, x = 300, y = 300, radius = 12) {
     this.x = x
     this.y = y
     this.radius = radius

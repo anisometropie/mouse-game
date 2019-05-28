@@ -1,16 +1,5 @@
-const vectorFromPoints = (start, end) => {
-  return { x: end.x - start.x, y: end.y - start.y }
-}
-
-const dotProduct = (u, v) => {
-  return u.x * v.x + u.y * v.y
-}
-
-const distance = (a, b) => {
-  return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
-}
-
-const vectorLength = v => distance({ x: 0, y: 0 }, v)
+import Vector from './Vector'
+import Point from './Point'
 
 export const isPointInRectangle = (point, rectangle) => {
   //  A—————————————B
@@ -19,14 +8,14 @@ export const isPointInRectangle = (point, rectangle) => {
   //  |             |
   //  D—————————————C
   const { A, B, C, D } = rectangle.vertices
-  const AP = vectorFromPoints(A, point)
-  const AB = vectorFromPoints(A, B)
-  const AD = vectorFromPoints(A, D)
+  const AP = Vector.fromPoints(A, point)
+  const AB = Vector.fromPoints(A, B)
+  const AD = Vector.fromPoints(A, D)
   return (
-    0 <= dotProduct(AP, AB) &&
-    dotProduct(AP, AB) <= dotProduct(AB, AB) &&
-    0 <= dotProduct(AP, AD) &&
-    dotProduct(AP, AD) <= dotProduct(AD, AD)
+    0 <= AP.dot(AB) &&
+    AP.dot(AB) <= AB.dot(AB) &&
+    0 <= AP.dot(AD) &&
+    AP.dot(AD) <= AD.dot(AD)
   )
 }
 
@@ -40,19 +29,17 @@ export const segmentIntersectsCircle = (segment, circle) => {
   // A——————D—————————B
   //
   //
-  const AB = vectorFromPoints(segment[0], segment[1])
-  const AC = vectorFromPoints(segment[0], circle.coords)
+  const AB = Vector.fromPoints(segment[0], segment[1])
+  const AC = Vector.fromPoints(segment[0], circle.coords)
   // is D inside segment ?
-  if (0 <= dotProduct(AC, AB) && dotProduct(AC, AB) <= dotProduct(AB, AB)) {
-    const distAD = dotProduct(AC, AB) / vectorLength(AB)
-    const theta = Math.acos(distAD / vectorLength(AC))
-    const distCD = distAD === 0 ? vectorLength(AC) : Math.tan(theta) * distAD
+  if (0 <= AC.dot(AB) && AC.dot(AB) <= AB.dot(AB)) {
+    const distAD = AC.dot(AB) / AB.length
+    const theta = Math.acos(distAD / AC.length)
+    const distCD = distAD === 0 ? AC.length : Math.tan(theta) * distAD
     return distCD <= circle.radius
   } else {
-    const BC = vectorFromPoints(segment[1], circle.coords)
-    return (
-      vectorLength(AC) <= circle.radius || vectorLength(BC) <= circle.radius
-    )
+    const BC = Vector.fromPoints(segment[1], circle.coords)
+    return AC.length <= circle.radius || BC.length <= circle.radius
   }
 }
 
@@ -66,3 +53,5 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
     segmentIntersectsCircle([D, A], circle)
   )
 }
+
+export const circleRectangeCollision = (circle, rectangle) => {}
