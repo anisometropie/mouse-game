@@ -153,4 +153,31 @@ describe('vector class', () => {
   })
 
   describe('get length', () => {})
+
+  describe('set length', () => {
+    describe('vector (1,0) change length to 2', () => {
+      it('should set length correctly', () => {
+        const vector = new Vector(1, 0)
+        vector.length = 2
+        expect(vector.x).toEqual(2)
+        expect(vector.y).toEqual(0)
+      })
+    })
+    describe('vector (3,4) change length to 10', () => {
+      it('should set length correctly', () => {
+        const vector = new Vector(3, 4)
+        vector.length = 10
+        expect(vector.x).toEqual(6)
+        expect(vector.y).toEqual(8)
+      })
+    })
+    describe('vector (3,4) change length to 1', () => {
+      it('should set length correctly', () => {
+        const vector = new Vector(3, 4)
+        vector.length = 1
+        expect(vector.x).toBeCloseTo(3 / 5, 10)
+        expect(vector.y).toBeCloseTo(4 / 5, 10)
+      })
+    })
+  })
 })

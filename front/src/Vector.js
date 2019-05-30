@@ -51,6 +51,17 @@ class Vector {
   get length() {
     return Point.distanceBetween({ x: 0, y: 0 }, this)
   }
+
+  set length(length) {
+    if (length === 0) {
+      this.x = 0
+      this.y = 0
+    } else if (length > 0) {
+      const ratio = length / this.length
+      this.x *= ratio
+      this.y *= ratio
+    }
+  }
 }
 
 export default Vector
