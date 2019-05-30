@@ -1,3 +1,5 @@
+import Point from './Point'
+
 class Rectangle {
   constructor(x, y, width, height) {
     this.x = x
@@ -9,10 +11,10 @@ class Rectangle {
   get vertices() {
     const { x, y, width, height } = this
     return {
-      A: { x, y },
-      B: { x: x + width, y },
-      C: { x: x + width, y: y + height },
-      D: { x, y: y + height }
+      A: new Point(x, y),
+      B: new Point(x + width, y),
+      C: new Point(x + width, y + height),
+      D: new Point(x, y + height)
     }
   }
 

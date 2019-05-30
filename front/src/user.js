@@ -1,3 +1,5 @@
+import Point from './Point'
+
 function componentToHex(c) {
   var hex = c.toString(16)
   return hex.length == 1 ? '0' + hex : hex
@@ -27,7 +29,7 @@ export default class user {
   }
 
   get coords() {
-    return { x: this.x, y: this.y }
+    return new Point(this.x, this.y)
   }
 
   setColor(color) {
