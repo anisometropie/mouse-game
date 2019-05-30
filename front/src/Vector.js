@@ -48,6 +48,23 @@ class Vector {
     return Vector.rotated(this, angle)
   }
 
+  static multiply(vector, scalar) {
+    vector.x *= scalar
+    vector.y *= scalar
+  }
+
+  multiply(scalar) {
+    Vector.multiply(this, scalar)
+  }
+
+  static multiplied(vector, scalar) {
+    return new Vector(vector.x * scalar, vector.y * scalar)
+  }
+
+  multiplied(scalar) {
+    return Vector.multiplied(this, scalar)
+  }
+
   get angle() {
     return Math.atan2(this.y, this.x)
   }

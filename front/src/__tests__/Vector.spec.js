@@ -181,6 +181,54 @@ describe('vector class', () => {
     })
   })
 
+  describe('static multiply', () => {
+    const vector = new Vector(1, 2)
+    Vector.multiply(vector, 3)
+    it('should multiply vector', () => {
+      expect(vector.x).toEqual(3)
+      expect(vector.y).toEqual(6)
+    })
+  })
+
+  describe('multiply', () => {
+    describe('pass same tests as static multiplied', () => {
+      const vector = new Vector(1, 2)
+      vector.multiply(3)
+      it('should multiply vector', () => {
+        expect(vector.x).toEqual(3)
+        expect(vector.y).toEqual(6)
+      })
+    })
+  })
+
+  describe('static multiplied', () => {
+    const vector = new Vector(1, 0)
+    const multiplied = Vector.multiplied(vector, 3)
+    it('should not mutate original vector', () => {
+      expect(vector.x).toEqual(1)
+      expect(vector.y).toEqual(0)
+    })
+    it('should return multiplied vector', () => {
+      expect(multiplied.x).toEqual(3)
+      expect(multiplied.y).toEqual(0)
+    })
+  })
+
+  describe('multiplied', () => {
+    describe('pass same tests as static multiplied', () => {
+      const vector = new Vector(1, 0)
+      const multiplied = vector.multiplied(3)
+      it('should not mutate original vector', () => {
+        expect(vector.x).toEqual(1)
+        expect(vector.y).toEqual(0)
+      })
+      it('should return multiplied vector', () => {
+        expect(multiplied.x).toEqual(3)
+        expect(multiplied.y).toEqual(0)
+      })
+    })
+  })
+
   describe('get angle', () => {
     describe('u=(1,0)', () => {
       it('should return 0', () => {
