@@ -10,6 +10,10 @@ class Vector {
     return new Vector(end.x - start.x, end.y - start.y)
   }
 
+  static fromPolar(length, angle) {
+    return new Vector(length * Math.cos(angle), length * Math.sin(angle))
+  }
+
   clone() {
     return new Vector(this.x, this.y)
   }
