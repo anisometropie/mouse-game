@@ -181,7 +181,30 @@ describe('vector class', () => {
     })
   })
 
+  describe('get angle', () => {
+    describe('u=(1,0)', () => {
+      it('should return 0', () => {
+        const vector = new Vector(1, 0)
+        expect(vector.angle).toBeCloseTo(0, 10)
+      })
+    })
+    describe('u=(1,1)', () => {
+      it('should return PI/4', () => {
+        const vector = new Vector(1, 1)
+        expect(vector.angle).toBeCloseTo(Math.PI / 4, 10)
+      })
+    })
+    describe('u=(0,1)', () => {
+      it('should return PI/2', () => {
+        const vector = new Vector(0, 1)
+        expect(vector.angle).toBeCloseTo(Math.PI / 2, 10)
+      })
+    })
+  })
+
   describe('get length', () => {})
+
+  describe('get squared length', () => {})
 
   describe('set length', () => {
     describe('vector (1,0) change length to 2', () => {

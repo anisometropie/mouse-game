@@ -48,8 +48,16 @@ class Vector {
     return Vector.rotated(this, angle)
   }
 
+  get angle() {
+    return Math.atan2(this.y, this.x)
+  }
+
   get length() {
     return Point.distanceBetween({ x: 0, y: 0 }, this)
+  }
+
+  get squaredLength() {
+    return Point.squaredDistanceBetween({ x: 0, y: 0 }, this)
   }
 
   set length(length) {
