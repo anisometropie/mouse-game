@@ -78,7 +78,36 @@ describe('vector class', () => {
     })
   })
 
-  describe('static dotProduct', () => {})
+  describe('static dotProduct', () => {
+    describe('u=(1,0) v=(2,0)', () => {
+      it('should return u.v = 2', () => {
+        const u = new Vector(1, 0)
+        const v = new Vector(2, 0)
+        expect(Vector.dotProduct(u, v)).toEqual(2)
+      })
+    })
+    describe('u=(1,1) v=(3,0)', () => {
+      it('should return u.v = 3', () => {
+        const u = new Vector(1, 1)
+        const v = new Vector(3, 0)
+        expect(Vector.dotProduct(u, v)).toEqual(3)
+      })
+    })
+    describe('u=(1,0) v=(0,1)', () => {
+      it('should return u.v = 0', () => {
+        const u = new Vector(1, 0)
+        const v = new Vector(0, 1)
+        expect(Vector.dotProduct(u, v)).toEqual(0)
+      })
+    })
+    describe('u=(2,0) v=(-1,1)', () => {
+      it('should return u.v = -1', () => {
+        const u = new Vector(2, 0)
+        const v = new Vector(-1, 1)
+        expect(Vector.dotProduct(u, v)).toEqual(-2)
+      })
+    })
+  })
 
   describe('dotProduct', () => {})
 
