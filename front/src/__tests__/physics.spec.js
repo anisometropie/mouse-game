@@ -1,4 +1,5 @@
 import Rectangle from '../Rectangle'
+import Point from '../Point'
 import user from '../user'
 
 import {
@@ -10,32 +11,32 @@ import {
 describe('point in rectangle function', () => {
   it('should return true if point is inside square', () => {
     const rectangle = new Rectangle(100, 100, 100, 100)
-    const point = { x: 150, y: 150 }
+    const point = new Point(150, 150)
     expect(isPointInRectangle(point, rectangle)).toBe(true)
   })
 
   it('should return true if point is inside square border', () => {
     const rectangle = new Rectangle(100, 100, 100, 100)
-    const point = { x: 100, y: 150 }
+    const point = new Point(100, 150)
     expect(isPointInRectangle(point, rectangle)).toBe(true)
   })
 
   it('should return true if point is inside thin rectangle', () => {
     const rectangle = new Rectangle(100, 100, 200, 10)
-    const point = { x: 180, y: 105 }
+    const point = new Point(180, 105)
     expect(isPointInRectangle(point, rectangle)).toBe(true)
   })
 
   it('should return false if point is outside the rectangle', () => {
     const rectangle = new Rectangle(100, 100, 200, 200)
-    const point = { x: 50, y: 50 }
+    const point = new Point(50, 50)
     expect(isPointInRectangle(point, rectangle)).toBe(false)
   })
 })
 
 describe('segment intersects circle function', () => {
   describe('horizontal segment [AB]', () => {
-    const segment = [{ x: 0, y: 0 }, { x: 100, y: 0 }]
+    const segment = [new Point(0, 0), new Point(100, 0)]
     describe('circle bottom-center', () => {
       it('should return true if segment intersects circle', () => {
         const circle = new user(null, null, 50, 20, 30)
