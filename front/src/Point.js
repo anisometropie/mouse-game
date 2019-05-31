@@ -10,6 +10,24 @@ class Point {
     return new Point(this.x, this.y)
   }
 
+  static move(point, x, y) {
+    point.x = x
+    point.y = y
+  }
+
+  move(x, y) {
+    Point.move(this, x, y)
+  }
+
+  static translate(point, vector) {
+    point.x += vector.x
+    point.y += vector.y
+  }
+
+  translate(vector) {
+    Point.translate(this, vector)
+  }
+
   static translated(point, vector) {
     return new Point(point.x + vector.x, point.y + vector.y)
   }

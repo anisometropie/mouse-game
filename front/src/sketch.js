@@ -77,8 +77,8 @@ function mouseMoved(event) {
   user.moveTo(newX, newY)
   resolveCollisionCircleRectangle(user, rectangle)
   const data = {
-    newX,
-    newY,
+    newX: user.coords.x,
+    newY: user.coords.y,
     name: document.getElementById('userName').value
   }
   socket.emit('user moves', data)
