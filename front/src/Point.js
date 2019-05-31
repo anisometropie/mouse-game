@@ -38,7 +38,8 @@ class Point {
     const AC = Vector.fromPoints(A, C)
     const AD_ABsignedRatio = AC.dotProduct(AB) / AB.squaredLength
     const t = Math.max(0, Math.min(1, AD_ABsignedRatio))
-    return Point.distanceBetween(C, A.translated(AB.multiplied(t)))
+    const closestPoint = A.translated(AB.multiplied(t))
+    return { distance: Point.distanceBetween(C, closestPoint), closestPoint }
   }
 }
 

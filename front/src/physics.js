@@ -1,5 +1,6 @@
 import Vector from './Vector'
 import Point from './Point'
+import { minBy } from 'lodash'
 
 export const isPointInRectangle = (point, rectangle) => {
   //  A—————————————B
@@ -20,27 +21,8 @@ export const isPointInRectangle = (point, rectangle) => {
 }
 
 export const segmentIntersectsCircle = (segment, circle) => {
-  // AB segment
-  // C circle center
-  //
-  //        C
-  //        |
-  //        |
-  // A——————D—————————B
-  //
-  //
-  const AB = Vector.fromPoints(segment[0], segment[1])
-  const AC = Vector.fromPoints(segment[0], circle.coords)
-  // is D inside segment ?
-  if (0 <= AC.dotProduct(AB) && AC.dotProduct(AB) <= AB.dotProduct(AB)) {
-    const distAD = AC.dotProduct(AB) / AB.length
-    const theta = Math.acos(distAD / AC.length)
-    const distCD = distAD === 0 ? AC.length : Math.tan(theta) * distAD
-    return distCD <= circle.radius
-  } else {
-    const BC = Vector.fromPoints(segment[1], circle.coords)
-    return AC.length <= circle.radius || BC.length <= circle.radius
-  }
+  const { distance } = Point.distanceToSegment(circle.coords, segment)
+  return distance <= circle.radius
 }
 
 export const circleIntersectsRectangle = (circle, rectangle) => {
@@ -54,4 +36,30 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
   )
 }
 
-export const circleRectangeCollision = (circle, rectangle) => {}
+export const resolveCollisionCircleRectangle = (circle, rectangle) => {
+  const { A, B, C, D } = rectangle.vertices
+  const segments = [[A, B], [B, C], [C, D], [D, A]]
+  const distances = segments.map(segment =>
+    Point.distanceToSegment(circle.coords, segment)
+  )
+  if (isPointInRectangle(circle.coords, rectangle)) {
+    const min = minBy(distances, 'distance')
+    const displacement = Vector.fromPoints(circle.coords, min.closestPoint)
+    displacement.length = displacement.length + circle.radius
+    circle.move(displacement.x, displacement.y)
+  } else {
+    for (const d of distances) {
+      if (d.distance < circle.radius) {
+        const distanceToMove =
+          circle.radius - Point.distanceBetween(d.closestPoint, circle.coords)
+        const displacement = Vector.fromPoints(d.closestPoint, circle.coords)
+        displacement.length = distanceToMove
+        circle.move(displacement.x, displacement.y)
+        break
+      }
+    }
+  }
+
+  // if center inside rectangle, distance center to border + radius
+  //
+}

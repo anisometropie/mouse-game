@@ -78,7 +78,7 @@ class Vector {
   }
 
   set length(length) {
-    if (length === 0) {
+    if (length === 0 || this.length === 0) {
       this.x = 0
       this.y = 0
     } else if (length > 0) {

@@ -1,7 +1,11 @@
 import io from 'socket.io-client'
 import { get, random } from 'lodash'
 import { getMousePos } from './utils'
-import { circleIntersectsRectangle, segmentIntersectsCircle } from './physics'
+import {
+  circleIntersectsRectangle,
+  segmentIntersectsCircle,
+  resolveCollisionCircleRectangle
+} from './physics'
 
 import Rectangle from './Rectangle'
 import User from './user'
@@ -16,7 +20,7 @@ const color = {
 }
 const user = new User('unamed', color)
 let users = []
-const rectangle = new Rectangle(100, 100, 100, 100)
+const rectangle = new Rectangle(-100, 100, 500, 100)
 
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
@@ -83,6 +87,7 @@ function mouseMoved(event) {
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.fillStyle = circleIntersectsRectangle(user, rectangle) ? 'green' : 'red'
+  resolveCollisionCircleRectangle(user, rectangle)
   rectangle.display(ctx)
   user.display(ctx, false)
   users

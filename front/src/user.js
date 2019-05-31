@@ -13,17 +13,23 @@ export default class user {
   constructor(name, color, x = 300, y = 300, radius = 12) {
     this.x = x
     this.y = y
+    this.prevX = 0
+    this.prevY = 0
     this.radius = radius
     this.name = name
     this.color = color
   }
 
   move(x, y) {
+    this.prevX = this.x
+    this.prevY = this.y
     this.x += x
     this.y += y
   }
 
   moveTo(x, y) {
+    this.prevX = this.x
+    this.prevY = this.y
     this.x = x
     this.y = y
   }
