@@ -75,6 +75,7 @@ function mouseMoved(event) {
     newY = radius
   }
   user.moveTo(newX, newY)
+  resolveCollisionCircleRectangle(user, rectangle)
   const data = {
     newX,
     newY,
@@ -87,7 +88,6 @@ function mouseMoved(event) {
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.fillStyle = circleIntersectsRectangle(user, rectangle) ? 'green' : 'red'
-  resolveCollisionCircleRectangle(user, rectangle)
   rectangle.display(ctx)
   user.display(ctx, false)
   users
