@@ -19,7 +19,7 @@ class User {
     this.color = color
   }
 
-  move(x, y) {
+  translate(x, y) {
     if (has(x, 'x')) {
       this.center.translate(x)
     } else if (isNumber(x) && isNumber(y)) {
@@ -27,7 +27,7 @@ class User {
     }
   }
 
-  moveTo(x, y) {
+  move(x, y) {
     this.center.move(x, y)
   }
 

@@ -79,7 +79,7 @@ function mouseMoved(event) {
   if (newY < radius) {
     newY = radius
   }
-  user.moveTo(newX, newY)
+  user.move(newX, newY)
   walls.forEach(w => {
     resolveCollisionCircleRectangle(user, w)
   })
