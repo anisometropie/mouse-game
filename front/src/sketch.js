@@ -20,7 +20,12 @@ const color = {
 }
 const user = new User('unamed', color)
 let users = []
-const rectangle = new Rectangle(-100, 100, 500, 100)
+const walls = []
+for (let i = 0; i < 10; i++) {
+  for (let j = 0; j < 10; j++) {
+    walls.push(new Rectangle(50 + 36 * i + 12 * j, 200 + 36 * j, 18, 12))
+  }
+}
 
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
@@ -75,7 +80,9 @@ function mouseMoved(event) {
     newY = radius
   }
   user.moveTo(newX, newY)
-  resolveCollisionCircleRectangle(user, rectangle)
+  walls.forEach(w => {
+    resolveCollisionCircleRectangle(user, w)
+  })
   const data = {
     newX: user.coords.x,
     newY: user.coords.y,
@@ -87,8 +94,6 @@ function mouseMoved(event) {
 
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
-  ctx.fillStyle = circleIntersectsRectangle(user, rectangle) ? 'green' : 'red'
-  rectangle.display(ctx)
   ctx.save()
   ctx.fillStyle = '#000000'
   walls.forEach(w => {
