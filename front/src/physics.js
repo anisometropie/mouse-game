@@ -38,7 +38,7 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
 
 export const resolveCollisionCircleRectangle = (circle, rectangle) => {
   if (
-    Point.distanceBetween(circle.center, rectangle.center) >
+    Point.distanceBetween(circle.coords, rectangle.center) >
     2 * Math.max(rectangle.width, rectangle.height) + circle.radius
   ) {
     return
