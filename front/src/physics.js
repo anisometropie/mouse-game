@@ -37,6 +37,12 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
 }
 
 export const resolveCollisionCircleRectangle = (circle, rectangle) => {
+  if (
+    Point.distanceBetween(circle.center, rectangle.center) >
+    2 * Math.max(rectangle.width, rectangle.height) + circle.radius
+  ) {
+    return
+  }
   const { A, B, C, D } = rectangle.vertices
   const segments = [[A, B], [B, C], [C, D], [D, A]]
   const distances = segments.map(segment =>
