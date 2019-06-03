@@ -89,6 +89,12 @@ function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.fillStyle = circleIntersectsRectangle(user, rectangle) ? 'green' : 'red'
   rectangle.display(ctx)
+  ctx.save()
+  ctx.fillStyle = '#000000'
+  walls.forEach(w => {
+    w.display(ctx)
+  })
+  ctx.restore()
   user.display(ctx, false)
   users
     .filter(u => u.id !== user.id)
