@@ -41,7 +41,7 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
     Point.distanceBetween(circle.coords, rectangle.center) >
     2 * Math.max(rectangle.width, rectangle.height) + circle.radius
   ) {
-    return
+    return false
   }
   const { A, B, C, D } = rectangle.vertices
   const segments = [[A, B], [B, C], [C, D], [D, A]]
@@ -53,6 +53,7 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
     const displacement = Vector.fromPoints(circle.coords, min.closestPoint)
     displacement.length = displacement.length + circle.radius
     circle.translate(displacement.x, displacement.y)
+    return true
   } else {
     for (const d of distances) {
       if (d.distance < circle.radius) {
@@ -61,7 +62,7 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
         const displacement = Vector.fromPoints(d.closestPoint, circle.coords)
         displacement.length = distanceToMove
         circle.translate(displacement.x, displacement.y)
-        break
+        return true
       }
     }
   }

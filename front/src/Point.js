@@ -2,6 +2,8 @@ import Vector from './Vector'
 
 class Point {
   constructor(x, y) {
+    this.previousX = x
+    this.previousY = y
     this.x = x
     this.y = y
   }
@@ -11,6 +13,8 @@ class Point {
   }
 
   static move(point, x, y) {
+    point.previousX = point.x
+    point.previousY = point.y
     point.x = x
     point.y = y
   }
@@ -20,6 +24,8 @@ class Point {
   }
 
   static translate(point, vector) {
+    point.previousX = point.x
+    point.previousY = point.y
     point.x += vector.x
     point.y += vector.y
   }

@@ -12,7 +12,7 @@ function rgbToHex(r, g, b) {
 }
 
 class User {
-  constructor(name, color, x = 300, y = 300, radius = 12) {
+  constructor(name, color, x = 600, y = 300, radius = 12) {
     this.center = new Point(x, y)
     this.radius = radius
     this.name = name

@@ -8,6 +8,9 @@ import {
 } from './physics'
 
 import Rectangle from './Rectangle'
+import Vector from './Vector'
+import Point from './Point'
+
 import User from './user'
 
 const pixelRatio = get(window, 'devicePixelRatio', 1)
@@ -65,24 +68,39 @@ function lockChangeAlert() {
 
 function mouseMoved(event) {
   const { radius } = user
-  let newX = user.coords.x + event.movementX / pixelRatio
-  let newY = user.coords.y + event.movementY / pixelRatio
-  if (newX > WIDTH - radius) {
-    newX = WIDTH - radius
+  const displacement = new Vector(
+    event.movementX / pixelRatio,
+    event.movementY / pixelRatio
+  )
+  const newPosition = new Point(
+    user.coords.x + displacement.x,
+    user.coords.y + displacement.y
+  )
+  if (newPosition.x > WIDTH - radius) {
+    newPosition.x = WIDTH - radius
   }
-  if (newX < radius) {
-    newX = radius
+  if (newPosition.x < radius) {
+    newPosition.x = radius
   }
-  if (newY > HEIGHT - radius) {
-    newY = HEIGHT - radius
+  if (newPosition.y > HEIGHT - radius) {
+    newPosition.y = HEIGHT - radius
   }
-  if (newY < radius) {
-    newY = radius
+  if (newPosition.y < radius) {
+    newPosition.y = radius
   }
-  user.move(newX, newY)
-  walls.forEach(w => {
-    resolveCollisionCircleRectangle(user, w)
-  })
+  const { previousX, previousY } = user.coords
+  const steps = 10
+  mainLoop: for (let t = 1 / steps; t <= 1; t += 1 / steps) {
+    user.move(
+      previousX + t * (newPosition.x - previousX),
+      previousY + t * (newPosition.y - previousY)
+    )
+    for (const w of walls) {
+      if (resolveCollisionCircleRectangle(user, w)) {
+        break mainLoop
+      }
+    }
+  }
   const data = {
     newX: user.coords.x,
     newY: user.coords.y,
