@@ -4,6 +4,7 @@ import { getMousePos } from './utils'
 import {
   circleIntersectsRectangle,
   segmentIntersectsCircle,
+  resolveWorldBordersCircleCollision,
   resolveCollisionCircleRectangle
 } from './physics'
 
@@ -40,8 +41,8 @@ socket.on('send user own id', data => {
   user.id = data
 })
 
-const WIDTH = window.innerWidth
-const HEIGHT = window.innerHeight
+export const WIDTH = window.innerWidth
+export const HEIGHT = window.innerHeight
 const canvas = document.getElementById('canvas')
 export const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', WIDTH)
@@ -67,40 +68,32 @@ function lockChangeAlert() {
 }
 
 function mouseMoved(event) {
-  const { radius } = user
   const displacement = new Vector(
     event.movementX / pixelRatio,
     event.movementY / pixelRatio
   )
+  user.translate(displacement)
+  resolveWorldBordersCircleCollision(user)
+  console.log(user.coords)
   const newPosition = new Point(
     user.coords.x + displacement.x,
     user.coords.y + displacement.y
   )
-  if (newPosition.x > WIDTH - radius) {
-    newPosition.x = WIDTH - radius
-  }
-  if (newPosition.x < radius) {
-    newPosition.x = radius
-  }
-  if (newPosition.y > HEIGHT - radius) {
-    newPosition.y = HEIGHT - radius
-  }
-  if (newPosition.y < radius) {
-    newPosition.y = radius
-  }
-  const { previousX, previousY } = user.coords
-  const steps = 10
-  mainLoop: for (let t = 1 / steps; t <= 1; t += 1 / steps) {
-    user.move(
-      previousX + t * (newPosition.x - previousX),
-      previousY + t * (newPosition.y - previousY)
-    )
-    for (const w of walls) {
-      if (resolveCollisionCircleRectangle(user, w)) {
-        break mainLoop
-      }
-    }
-  }
+
+  // const { previousX, previousY } = user.coords
+  // const steps = 10
+  // mainLoop: for (let t = 1 / steps; t <= 1; t += 1 / steps) {
+  //   user.move(
+  //     previousX + t * (newPosition.x - previousX),
+  //     previousY + t * (newPosition.y - previousY)
+  //   )
+  //   for (const w of walls) {
+  //     if (resolveCollisionCircleRectangle(user, w)) {
+  //       break mainLoop
+  //     }
+  //   }
+  // }
+
   const data = {
     newX: user.coords.x,
     newY: user.coords.y,

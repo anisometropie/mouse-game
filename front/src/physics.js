@@ -2,6 +2,8 @@ import Vector from './Vector'
 import Point from './Point'
 import { minBy } from 'lodash'
 
+import { WIDTH, HEIGHT } from './sketch'
+
 export const isPointInRectangle = (point, rectangle) => {
   //  A—————————————B
   //  |             |
@@ -34,6 +36,22 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
     segmentIntersectsCircle([C, D], circle) ||
     segmentIntersectsCircle([D, A], circle)
   )
+}
+
+export const resolveWorldBordersCircleCollision = circle => {
+  const { center, radius } = circle
+  if (center.x > WIDTH - radius) {
+    center.x = WIDTH - radius
+  }
+  if (center.x < radius) {
+    center.x = radius
+  }
+  if (center.y > HEIGHT - radius) {
+    center.y = HEIGHT - radius
+  }
+  if (center.y < radius) {
+    center.y = radius
+  }
 }
 
 export const resolveCollisionCircleRectangle = (circle, rectangle) => {
