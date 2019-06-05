@@ -66,13 +66,16 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
   const distances = segments.map(segment =>
     Point.distanceToSegment(circle.coords, segment)
   )
+  // CIRCLE CENTER IS INSIDE RECTANGLE
   if (isPointInRectangle(circle.coords, rectangle)) {
     const min = minBy(distances, 'distance')
     const displacement = Vector.fromPoints(circle.coords, min.closestPoint)
     displacement.length = displacement.length + circle.radius
     circle.translate(displacement.x, displacement.y)
     return true
-  } else {
+  }
+  // CIRCLE CENTER IS OUTSIDE
+  else {
     for (const d of distances) {
       if (d.distance < circle.radius) {
         const distanceToMove =
@@ -84,7 +87,6 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
       }
     }
   }
-
   // if center inside rectangle, distance center to border + radius
   //
 }
