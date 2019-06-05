@@ -42,6 +42,24 @@ class Point {
     return Point.translated(this, vector)
   }
 
+  static setX(point, value) {
+    point.previousX = point.x
+    point.x = value
+  }
+
+  setX(value) {
+    Point.setX(this, value)
+  }
+
+  static setY(point, value) {
+    point.previousY = point.y
+    point.y = value
+  }
+
+  setY(value) {
+    Point.setY(this, value)
+  }
+
   static distanceBetween(a, b) {
     return Math.sqrt(Point.squaredDistanceBetween(a, b))
   }
