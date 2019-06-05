@@ -41,16 +41,16 @@ export const circleIntersectsRectangle = (circle, rectangle) => {
 export const resolveWorldBordersCircleCollision = circle => {
   const { center, radius } = circle
   if (center.x > WIDTH - radius) {
-    center.x = WIDTH - radius
+    center.setX(WIDTH - radius)
   }
   if (center.x < radius) {
-    center.x = radius
+    center.setX(radius)
   }
   if (center.y > HEIGHT - radius) {
-    center.y = HEIGHT - radius
+    center.setY(HEIGHT - radius)
   }
   if (center.y < radius) {
-    center.y = radius
+    center.setY(radius)
   }
 }
 
