@@ -12,15 +12,41 @@ class MovableRectangle extends Rectangle {
     path = [],
     velocity = 0
   ) {
-    super(x, y, width, height, hasCollision, kills)
+    super(
+      path[0] ? path[0].x : x,
+      path[0] ? path[0].y : y,
+      width,
+      height,
+      hasCollision,
+      kills
+    )
     this.path = path
     this.velocity = path.length > 1 ? velocity : 0
-    this.currentPathIndex = 0
+    this.currentPathIndex = -1
     if (path.length > 1) {
-      this.velocityVector = Vector.fromPoints(
-        path.slice(this.currentPathIndex, 2)
-      )
-      this.velocityVector.length = velocity
+      this.selectNextPathSegment()
+    }
+  }
+
+  selectNextPathSegment() {
+    this.currentPathIndex = (this.currentPathIndex + 1) % this.path.length
+    this.currentSegmentStart = this.path[this.currentPathIndex]
+    this.currentSegmentEnd = this.path[
+      (this.currentPathIndex + 1) % this.path.length
+    ]
+    this.currentSegment = Vector.fromPoints(
+      this.currentSegmentStart,
+      this.currentSegmentEnd
+    )
+    this.velocityVector = this.currentSegment.clone()
+    this.velocityVector.length = this.velocity
+  }
+
+  walkPath() {
+    this.translate(this.velocityVector)
+    const positionVector = Vector.fromPoints(this.currentSegmentStart, this.A)
+    if (positionVector.length >= this.currentSegment.length) {
+      this.selectNextPathSegment()
     }
   }
 

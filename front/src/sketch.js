@@ -25,14 +25,15 @@ const color = {
 const user = new User('unamed', color)
 let users = []
 const walls = []
-
+const movableWalls = []
 walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
 walls.push(new RectangleBuilder(450, 300, 200, 120).build())
-walls.push(
+movableWalls.push(
   new RectangleBuilder(500, 500, 20, 20)
     .makeMovable()
-    .withPath()
-    .withVelocity()
+    .makeCollide()
+    .withPath([new Point(100, 100), new Point(500, 100), new Point(300, 300)])
+    .withVelocity(2)
     .build()
 )
 
@@ -88,8 +89,8 @@ function mouseMoved(event) {
   )
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
-  for (const w of walls.filter(wall => wall.hasCollision)) {
-    resolveCollisionCircleRectangle(user, w)
+  for (const w of walls) {
+    if (w.hasCollision) resolveCollisionCircleRectangle(user, w)
   }
   const data = {
     newX: user.coords.x,
@@ -97,14 +98,21 @@ function mouseMoved(event) {
     name: document.getElementById('userName').value
   }
   socket.emit('user moves', data)
-  window.requestAnimationFrame(draw)
 }
 
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.save()
   ctx.fillStyle = '#000000'
+
   walls.forEach(w => {
+    w.display(ctx)
+  })
+  movableWalls.forEach(w => {
+    w.walkPath()
+    if (w.hasCollision) {
+      resolveCollisionCircleRectangle(user, w)
+    }
     w.display(ctx)
   })
   ctx.restore()
@@ -114,5 +122,6 @@ function draw() {
     .forEach(u => {
       u.display(ctx, true)
     })
+  window.requestAnimationFrame(draw)
 }
 window.requestAnimationFrame(draw)
