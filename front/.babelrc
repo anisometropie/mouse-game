@@ -1,4 +1,16 @@
 {
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "test": "./test",
+          "underscore": "lodash"
+        }
+      }
+    ]
+  ],
   "env": {
     "test": {
       "plugins": ["transform-es2015-modules-commonjs"]
