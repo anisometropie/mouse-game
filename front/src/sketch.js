@@ -26,8 +26,15 @@ const user = new User('unamed', color)
 let users = []
 const walls = []
 
-walls.push(new Rectangle(50, 200, 200, 520))
-walls.push(new Rectangle(450, 300, 200, 120, false))
+walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
+walls.push(new RectangleBuilder(450, 300, 200, 120).build())
+walls.push(
+  new RectangleBuilder(500, 500, 20, 20)
+    .makeMovable()
+    .withPath()
+    .withVelocity()
+    .build()
+)
 
 // for (let i = 0; i < 10; i++) {
 //   for (let j = 0; j < 10; j++) {
