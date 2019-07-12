@@ -25,11 +25,14 @@ const color = {
 const user = new User('unamed', color)
 let users = []
 const walls = []
-for (let i = 0; i < 10; i++) {
-  for (let j = 0; j < 10; j++) {
-    walls.push(new Rectangle(50 + 36 * i + 12 * j, 200 + 36 * j, 18, 12))
-  }
-}
+
+walls.push(new Rectangle(50, 200, 200, 520))
+
+// for (let i = 0; i < 10; i++) {
+//   for (let j = 0; j < 10; j++) {
+//     walls.push(new Rectangle(50 + 36 * i + 12 * j, 200 + 36 * j, 18, 12))
+//   }
+// }
 
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
