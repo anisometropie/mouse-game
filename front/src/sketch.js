@@ -43,7 +43,10 @@ socket.on('send user own id', data => {
 
 export const WIDTH = window.innerWidth
 export const HEIGHT = window.innerHeight
-const canvas = document.getElementById('canvas')
+const canvas = document.getElementById('canvas') || {
+  getContext: () => {},
+  setAttribute: () => {}
+}
 export const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', WIDTH)
 canvas.setAttribute('height', HEIGHT)
