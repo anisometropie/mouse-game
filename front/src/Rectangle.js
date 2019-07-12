@@ -1,7 +1,7 @@
 import Point from './Point'
 
 class Rectangle {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, hasCollision = true) {
     this.x = x
     this.y = y
     this.center = new Point(x + width / 2, y + height / 2)
@@ -11,6 +11,7 @@ class Rectangle {
     this.B = new Point(x + width, y)
     this.C = new Point(x + width, y + height)
     this.D = new Point(x, y + height)
+    this.hasCollision = hasCollision
   }
 
   get vertices() {

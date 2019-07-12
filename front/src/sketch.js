@@ -27,6 +27,7 @@ let users = []
 const walls = []
 
 walls.push(new Rectangle(50, 200, 200, 520))
+walls.push(new Rectangle(450, 300, 200, 120, false))
 
 // for (let i = 0; i < 10; i++) {
 //   for (let j = 0; j < 10; j++) {
@@ -80,7 +81,7 @@ function mouseMoved(event) {
   )
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
-  for (const w of walls) {
+  for (const w of walls.filter(wall => wall.hasCollision)) {
     resolveCollisionCircleRectangle(user, w)
   }
   const data = {
