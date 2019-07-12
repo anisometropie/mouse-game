@@ -8,11 +8,11 @@ import {
   resolveCollisionCircleRectangle
 } from './physics'
 
-import Rectangle from './Rectangle'
-import Vector from './Vector'
-import Point from './Point'
+import RectangleBuilder from 'objects/Rectangle'
+import Vector from 'objects/Vector'
+import Point from 'objects/Point'
 
-import User from './user'
+import User from 'objects/user'
 
 const pixelRatio = get(window, 'devicePixelRatio', 1)
 

@@ -1,5 +1,5 @@
-import Vector from './Vector'
-import Point from './Point'
+import Vector from 'objects/Vector'
+import Point from 'objects/Point'
 import { minBy, maxBy } from 'lodash'
 
 import { WIDTH, HEIGHT } from './sketch'

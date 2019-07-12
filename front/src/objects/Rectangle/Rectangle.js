@@ -1,17 +1,16 @@
-import Point from './Point'
+import Point from 'objects/Point'
 
 class Rectangle {
-  constructor(x, y, width, height, hasCollision = true) {
-    this.x = x
-    this.y = y
-    this.center = new Point(x + width / 2, y + height / 2)
-    this.width = width
-    this.height = height
+  constructor(x, y, width, height, hasCollision = false, kills = false) {
     this.A = new Point(x, y)
     this.B = new Point(x + width, y)
     this.C = new Point(x + width, y + height)
     this.D = new Point(x, y + height)
+    this.center = new Point(x + width / 2, y + height / 2)
+    this.width = width
+    this.height = height
     this.hasCollision = hasCollision
+    this.kills = kills
   }
 
   get vertices() {
@@ -22,6 +21,14 @@ class Rectangle {
       C,
       D
     }
+  }
+
+  get x() {
+    return this.A.x
+  }
+
+  get y() {
+    return this.A.y
   }
 
   display(ctx) {

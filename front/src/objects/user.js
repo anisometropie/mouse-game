@@ -1,5 +1,5 @@
-import Point from './Point'
-import Vector from './Vector'
+import Point from 'objects/Point'
+import Vector from 'objects/Vector'
 import { has, isNumber } from 'lodash'
 
 function componentToHex(c) {

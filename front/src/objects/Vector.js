@@ -1,4 +1,4 @@
-import Point from './Point'
+import Point from 'objects/Point'
 
 class Vector {
   constructor(x, y) {
