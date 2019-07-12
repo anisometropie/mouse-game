@@ -77,26 +77,9 @@ function mouseMoved(event) {
   )
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
-  console.log(user.coords)
-  const newPosition = new Point(
-    user.coords.x + displacement.x,
-    user.coords.y + displacement.y
-  )
-
-  // const { previousX, previousY } = user.coords
-  // const steps = 10
-  // mainLoop: for (let t = 1 / steps; t <= 1; t += 1 / steps) {
-  //   user.move(
-  //     previousX + t * (newPosition.x - previousX),
-  //     previousY + t * (newPosition.y - previousY)
-  //   )
-  //   for (const w of walls) {
-  //     if (resolveCollisionCircleRectangle(user, w)) {
-  //       break mainLoop
-  //     }
-  //   }
-  // }
-
+  for (const w of walls) {
+    resolveCollisionCircleRectangle(user, w)
+  }
   const data = {
     newX: user.coords.x,
     newY: user.coords.y,

@@ -1,6 +1,6 @@
 import Vector from './Vector'
 import Point from './Point'
-import { minBy } from 'lodash'
+import { minBy, maxBy } from 'lodash'
 
 import { WIDTH, HEIGHT } from './sketch'
 
@@ -57,18 +57,18 @@ export const resolveWorldBordersCircleCollision = circle => {
 export const resolveCollisionCircleRectangle = (circle, rectangle) => {
   if (
     Point.distanceBetween(circle.coords, rectangle.center) >
-    2 * Math.max(rectangle.width, rectangle.height) + circle.radius
+    Math.max(rectangle.width, rectangle.height) + circle.radius
   ) {
     return false
   }
   const { A, B, C, D } = rectangle.vertices
   const segments = [[A, B], [B, C], [C, D], [D, A]]
-  const distances = segments.map(segment =>
+  const distancesToEdges = segments.map(segment =>
     Point.distanceToSegment(circle.coords, segment)
   )
   // CIRCLE CENTER IS INSIDE RECTANGLE
   if (isPointInRectangle(circle.coords, rectangle)) {
-    const min = minBy(distances, 'distance')
+    const min = minBy(distancesToEdges, 'distance')
     const displacement = Vector.fromPoints(circle.coords, min.closestPoint)
     displacement.length = displacement.length + circle.radius
     circle.translate(displacement.x, displacement.y)
@@ -76,15 +76,17 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
   }
   // CIRCLE CENTER IS OUTSIDE
   else {
-    for (const d of distances) {
-      if (d.distance < circle.radius) {
-        const distanceToMove =
-          circle.radius - Point.distanceBetween(d.closestPoint, circle.coords)
-        const displacement = Vector.fromPoints(d.closestPoint, circle.coords)
-        displacement.length = distanceToMove
-        circle.translate(displacement.x, displacement.y)
-        return true
-      }
+    const max = maxBy(
+      distancesToEdges.filter(d => d.distance < circle.radius),
+      'distance'
+    )
+    if (max) {
+      const distanceToMove =
+        circle.radius - Point.distanceBetween(max.closestPoint, circle.coords)
+      const displacement = Vector.fromPoints(max.closestPoint, circle.coords)
+      displacement.length = distanceToMove
+      circle.translate(displacement.x, displacement.y)
+      return true
     }
   }
   // if center inside rectangle, distance center to border + radius
