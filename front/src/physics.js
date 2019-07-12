@@ -67,6 +67,8 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
     Point.distanceToSegment(circle.coords, segment)
   )
   // CIRCLE CENTER IS INSIDE RECTANGLE
+  // take the 4 distance to the center of the circle to each segments
+  // resolve in the direction of the closest segment
   if (isPointInRectangle(circle.coords, rectangle)) {
     const min = minBy(distancesToEdges, 'distance')
     const displacement = Vector.fromPoints(circle.coords, min.closestPoint)
@@ -89,6 +91,15 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
       return true
     }
   }
-  // if center inside rectangle, distance center to border + radius
-  //
 }
+
+// STEP COLLISION RESOLVER
+// const previousPos = new Point(
+//   circle.center.previousX,
+//   circle.center.previousY
+// )
+// const mainDisplacement = Vector.fromPoints(previousPos, circle.coords)
+// const stepDisplacement = Vector.fromPolar(
+//   mainDisplacement.length / steps,
+//   mainDisplacement.angle
+// )
