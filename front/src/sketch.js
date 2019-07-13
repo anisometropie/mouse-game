@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 import { get, random } from 'lodash'
-import { getMousePos } from './utils'
+import { getMousePos, fpsCounter } from './utils'
 import {
   circleIntersectsRectangle,
   segmentIntersectsCircle,
@@ -101,10 +101,11 @@ function mouseMoved(event) {
 }
 
 function draw() {
+  window.requestAnimationFrame(draw)
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.save()
   ctx.fillStyle = '#000000'
-
+  ctx.fillText(fpsCounter.fps, 20, 20)
   walls.forEach(w => {
     w.display(ctx)
   })
@@ -122,6 +123,5 @@ function draw() {
     .forEach(u => {
       u.display(ctx, true)
     })
-  window.requestAnimationFrame(draw)
 }
 window.requestAnimationFrame(draw)
