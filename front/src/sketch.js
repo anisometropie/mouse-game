@@ -7,7 +7,8 @@ import {
   segmentIntersectsCircle,
   resolveWorldBordersCircleCollision,
   resolveCollisionCircleRectangle
-} from './physics'
+} from 'engine/physics'
+import { setPointerLock } from 'engine/pointerLock'
 
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
@@ -60,25 +61,7 @@ const canvas = document.getElementById('canvas') || {
 export const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', WIDTH)
 canvas.setAttribute('height', HEIGHT)
-
-canvas.requestPointerLock =
-  canvas.requestPointerLock || canvas.mozRequestPointerLock
-document.exitPointerLock =
-  document.exitPointerLock || document.mozExitPointerLock
-canvas.onclick = canvas.requestPointerLock
-document.addEventListener('pointerlockchange', lockChangeAlert, false)
-document.addEventListener('mozpointerlockchange', lockChangeAlert, false)
-
-function lockChangeAlert() {
-  if (
-    document.pointerLockElement === canvas ||
-    document.mozPointerLockElement === canvas
-  ) {
-    document.addEventListener('mousemove', mouseMoved, false)
-  } else {
-    document.removeEventListener('mousemove', mouseMoved, false)
-  }
-}
+setPointerLock(canvas, mouseMoved)
 
 function mouseMoved(event) {
   const displacement = new Vector(

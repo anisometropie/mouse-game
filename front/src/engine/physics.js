@@ -2,7 +2,7 @@ import Vector from 'objects/Vector'
 import Point from 'objects/Point'
 import { minBy, maxBy } from 'lodash'
 
-import { WIDTH, HEIGHT } from './sketch'
+import { WIDTH, HEIGHT } from 'sketch'
 
 export const isPointInRectangle = (point, rectangle) => {
   //  A—————————————B
