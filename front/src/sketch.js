@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import { get } from 'lodash'
-import { getMousePos, fpsCounter } from './utils'
+import { fpsCounter } from 'utils/FpsCounter'
+import { getMousePos } from 'utils/helpers'
 import {
   circleIntersectsRectangle,
   segmentIntersectsCircle,
