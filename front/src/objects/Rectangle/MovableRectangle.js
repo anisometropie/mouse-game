@@ -7,6 +7,7 @@ class MovableRectangle extends Rectangle {
     y,
     width,
     height,
+    color,
     hasCollision = false,
     kills = false,
     path = [],
@@ -17,6 +18,7 @@ class MovableRectangle extends Rectangle {
       path[0] ? path[0].y : y,
       width,
       height,
+      color,
       hasCollision,
       kills
     )

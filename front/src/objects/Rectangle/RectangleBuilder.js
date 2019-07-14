@@ -1,5 +1,6 @@
 import Rectangle from './Rectangle'
 import MovableRectangle from './MovableRectangle'
+import Color from 'effects/Color'
 
 class RectangleBuilder {
   constructor(x, y, width, height) {
@@ -34,6 +35,10 @@ class RectangleBuilder {
     return this
   }
 
+  withColor(red, green, blue) {
+    this.color = new Color(red, green, blue)
+  }
+
   build() {
     if (this.isMovable) {
       return new MovableRectangle(
@@ -41,6 +46,7 @@ class RectangleBuilder {
         this.y,
         this.width,
         this.height,
+        this.color,
         this.hasCollision,
         this.kills,
         this.path,
@@ -52,6 +58,7 @@ class RectangleBuilder {
       this.y,
       this.width,
       this.height,
+      this.color,
       this.hasCollision,
       this.kills
     )
