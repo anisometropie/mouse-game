@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import { get, random } from 'lodash'
+import { get } from 'lodash'
 import { getMousePos, fpsCounter } from './utils'
 import {
   circleIntersectsRectangle,
@@ -11,17 +11,14 @@ import {
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
-
 import User from 'objects/user'
+
+import Color from 'effects/Color'
 
 const pixelRatio = get(window, 'devicePixelRatio', 1)
 
 let userNameInput
-const color = {
-  red: random(0, 255),
-  green: random(0, 255),
-  blue: random(0, 255)
-}
+const color = Color.random()
 const user = new User('unamed', color)
 let users = []
 const walls = []
