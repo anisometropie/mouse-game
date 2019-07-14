@@ -10,6 +10,8 @@ import {
 } from 'engine/physics'
 import { setPointerLock } from 'engine/pointerLock'
 
+import TrapSystem from 'objects/TrapSystem'
+import Interval from 'objects/Interval'
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
@@ -25,6 +27,7 @@ const user = new User('unamed', color)
 let users = []
 const walls = []
 const movableWalls = []
+const traps = []
 walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
 walls.push(new RectangleBuilder(450, 300, 200, 120).build())
 movableWalls.push(
@@ -35,6 +38,24 @@ movableWalls.push(
     .withVelocity(2)
     .build()
 )
+const trapSystem = new TrapSystem(
+  400,
+  600,
+  [
+    {
+      traps: [new RectangleBuilder(0, 0, 100, 100).build()],
+      timing: new Interval('[0, 1000['),
+      on: true
+    },
+    {
+      traps: [new RectangleBuilder(0, 100, 100, 100).build()],
+      timing: new Interval('[1000, 2000]'),
+      on: false
+    }
+  ],
+  2000
+)
+traps.push(trapSystem)
 
 // for (let i = 0; i < 10; i++) {
 //   for (let j = 0; j < 10; j++) {
@@ -88,6 +109,9 @@ function draw() {
   ctx.fillStyle = '#000000'
   ctx.fillText(fpsCounter.fps, 20, 20)
   walls.forEach(w => {
+    if (w.hasCollision) {
+      resolveCollisionCircleRectangle(user, w)
+    }
     w.display(ctx)
   })
   movableWalls.forEach(w => {
@@ -95,6 +119,9 @@ function draw() {
     if (w.hasCollision) {
       resolveCollisionCircleRectangle(user, w)
     }
+    w.display(ctx)
+  })
+  traps.forEach(w => {
     w.display(ctx)
   })
   ctx.restore()
