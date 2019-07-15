@@ -1,3 +1,4 @@
+import Vector from 'objects/Vector'
 import { circleIntersectsRectangle } from 'engine/physics'
 
 const TRAP_TIMING_STEP = 100
@@ -26,6 +27,12 @@ class TrapSystem {
     this.cycleLength = cycleLength
     this.currentTime = 0
     this.loop = setInterval(this.toggleTraps.bind(this), TRAP_TIMING_STEP)
+    const vector = new Vector(this.x, this.y)
+    for (let g of this.groups) {
+      for (let t of g.traps) {
+        t.translate(vector)
+      }
+    }
   }
 
   toggleTraps() {
