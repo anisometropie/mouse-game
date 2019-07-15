@@ -1,6 +1,6 @@
 import { circleIntersectsRectangle } from 'engine/physics'
 
-const TRAP_TIMING_STEP = 1000
+const TRAP_TIMING_STEP = 100
 /**
   * A set of multiple traps.
   * Deals with the timing each trap turns on and off
@@ -13,7 +13,7 @@ class TrapSystem {
   /**
    * @param {number} x — x coordinate
    * @param {number} y — y coordinate
-   * @param {{traps: Array, timing: Interval[]}[]} groups
+   * @param { { traps: Rectangle[], timing: Interval[] }[] } groups
       — represent trap groups
         each group has an array of traps
         and a timing array, which represents when the trap is on

@@ -44,12 +44,12 @@ const trapSystem = new TrapSystem(
   [
     {
       traps: [new RectangleBuilder(0, 0, 100, 100).build()],
-      timing: new Interval('[0, 1000['),
+      timing: new Interval('[0, 500['),
       on: true
     },
     {
       traps: [new RectangleBuilder(0, 100, 100, 100).build()],
-      timing: new Interval('[1000, 2000]'),
+      timing: new Interval('[1000, 1500]'),
       on: false
     }
   ],
