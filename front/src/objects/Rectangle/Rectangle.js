@@ -32,6 +32,17 @@ class Rectangle {
     return this.A.y
   }
 
+  static translate(rectangle, vector) {
+    for (let vertice of Object.values(rectangle.vertices)) {
+      vertice.translate(vector)
+    }
+    rectangle.center.translate(vector)
+  }
+
+  translate(vector) {
+    Rectangle.translate(this, vector)
+  }
+
   display(ctx, useOwnColor = true) {
     const { x, y, width, height } = this
     if (useOwnColor) {

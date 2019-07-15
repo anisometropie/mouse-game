@@ -51,17 +51,6 @@ class MovableRectangle extends Rectangle {
       this.selectNextPathSegment()
     }
   }
-
-  static translate(rectangle, vector) {
-    for (let vertice of Object.values(rectangle.vertices)) {
-      vertice.translate(vector)
-    }
-    rectangle.center.translate(vector)
-  }
-
-  translate(vector) {
-    MovableRectangle.translate(this, vector)
-  }
 }
 
 export default MovableRectangle
