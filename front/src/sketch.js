@@ -22,7 +22,10 @@ import Color from 'effects/Color'
 const pixelRatio = get(window, 'devicePixelRatio', 1)
 
 let userNameInput
-const spawn = new RectangleBuilder(400, 0, 50, 50).build()
+const spawn = new RectangleBuilder(400, 0, 50, 50)
+  .withColor(new Color('lightblue'))
+  .build()
+
 const user = new User(100, 100, 12, Color.random(), '', spawn)
 let users = []
 const walls = [spawn]
@@ -105,8 +108,6 @@ function mouseMoved(event) {
 function draw() {
   window.requestAnimationFrame(draw)
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
-  ctx.save()
-  ctx.fillStyle = '#000000'
   ctx.fillText(fpsCounter.fps, 20, 20)
   walls.forEach(w => {
     if (w.hasCollision) {
@@ -127,7 +128,6 @@ function draw() {
       user.kill()
     }
   })
-  ctx.restore()
   user.display(ctx, false)
   users
     .filter(u => u.id !== user.id)

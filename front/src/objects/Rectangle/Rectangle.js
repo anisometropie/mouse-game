@@ -32,8 +32,11 @@ class Rectangle {
     return this.A.y
   }
 
-  display(ctx) {
+  display(ctx, useOwnColor = true) {
     const { x, y, width, height } = this
+    if (useOwnColor) {
+      ctx.fillStyle = this.color ? this.color.hexString : '#000000'
+    }
     ctx.fillRect(x, y, width, height)
   }
 }

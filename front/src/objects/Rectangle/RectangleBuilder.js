@@ -2,6 +2,8 @@ import Rectangle from './Rectangle'
 import MovableRectangle from './MovableRectangle'
 import Color from 'effects/Color'
 
+import { isObject } from 'lodash'
+
 class RectangleBuilder {
   constructor(x, y, width, height) {
     this.x = x
@@ -36,7 +38,12 @@ class RectangleBuilder {
   }
 
   withColor(red, green, blue) {
-    this.color = new Color(red, green, blue)
+    if (isObject(red)) {
+      this.color = red
+    } else {
+      this.color = new Color(red, green, blue)
+    }
+    return this
   }
 
   build() {
