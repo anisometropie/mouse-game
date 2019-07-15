@@ -1,3 +1,5 @@
+import { circleIntersectsRectangle } from 'engine/physics'
+
 const TRAP_TIMING_STEP = 1000
 /**
   * A set of multiple traps.
@@ -46,11 +48,21 @@ class TrapSystem {
   display(ctx) {
     for (let g of this.groups) {
       ctx.fillStyle = g.on ? 'red' : 'green'
-
       for (let t of g.traps) {
         t.display(ctx)
       }
     }
+  }
+
+  hasUserFallenInTrap(user) {
+    for (let g of this.groups) {
+      for (let t of g.traps) {
+        if (circleIntersectsRectangle(user, t) && g.on) {
+          return true
+        }
+      }
+    }
+    return false
   }
 }
 

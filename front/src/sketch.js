@@ -121,8 +121,11 @@ function draw() {
     }
     w.display(ctx)
   })
-  traps.forEach(w => {
-    w.display(ctx)
+  traps.forEach(t => {
+    t.display(ctx)
+    if (t.hasUserFallenInTrap(user)) {
+      user.kill()
+    }
   })
   ctx.restore()
   user.display(ctx, false)
