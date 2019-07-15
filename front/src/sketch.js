@@ -15,17 +15,17 @@ import Interval from 'objects/Interval'
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
-import User from 'objects/user'
+import User from 'objects/User'
 
 import Color from 'effects/Color'
 
 const pixelRatio = get(window, 'devicePixelRatio', 1)
 
 let userNameInput
-const color = Color.random()
-const user = new User('unamed', color)
+const spawn = new RectangleBuilder(400, 0, 50, 50).build()
+const user = new User(100, 100, 12, Color.random(), '', spawn)
 let users = []
-const walls = []
+const walls = [spawn]
 const movableWalls = []
 const traps = []
 walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
@@ -66,7 +66,7 @@ traps.push(trapSystem)
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
 socket.on('users', data => {
-  users = data.map(d => new User(d.name, d.color, d.x, d.y))
+  users = data.map(d => new User(d.x, d.y, d.radius, d.color, d.name))
   window.requestAnimationFrame(draw)
 })
 socket.on('send user own id', data => {
