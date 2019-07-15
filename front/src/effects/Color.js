@@ -1,10 +1,26 @@
-import { random } from 'lodash'
+import { random, isString, isNumber } from 'lodash'
+import { colors, hexToRgb, rgbToHex } from 'utils/colors'
 
 class Color {
-  constructor(red, green, blue) {
-    this.red = red
-    this.green = green
-    this.blue = blue
+  /**
+   * @param {number|string} v1 — decimal red value OR HTML color name
+   * @param {number} v2 — decimal green value
+   * @param {number} v3 — decimal blue value
+   */
+  constructor(v1, v2, v3) {
+    if (isString(v1)) {
+      const { red, green, blue } = hexToRgb(colors[v1])
+      this.red = red
+      this.green = green
+      this.blue = blue
+    } else if (isNumber(v1) && isNumber(v2) && isNumber(v3)) {
+      this.red = v1
+      this.green = v2
+      this.blue = v3
+    } else {
+      throw new Error('Invalid input for new Color.')
+    }
+    this.hexString = rgbToHex(this.red, this.green, this.blue)
   }
 
   static random() {
