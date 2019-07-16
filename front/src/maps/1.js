@@ -4,17 +4,18 @@ import TrapSystem from 'objects/TrapSystem'
 import Interval from 'objects/Interval'
 import Color from 'effects/Color'
 
-const spawn = new RectangleBuilder(400, 0, 50, 50)
+import crusher from 'maps/props/crusher'
+
+const spawn = new RectangleBuilder(20, 20, 100, 100)
   .withColor(new Color('lightblue'))
   .build()
 
 // WALLS
 const walls = [spawn]
-walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
-walls.push(new RectangleBuilder(450, 300, 200, 120).build())
+walls.push(new RectangleBuilder(0, 0, 20, 820).makeCollide().build())
 
 // MOVABLE WALLS
-const movableWalls = []
+const movableWalls = [...crusher]
 movableWalls.push(
   new RectangleBuilder(500, 500, 20, 20)
     .makeMovable()

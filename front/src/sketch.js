@@ -22,11 +22,11 @@ import TrapSystem from 'objects/TrapSystem'
 
 import world1 from 'maps/1'
 
-let userNameInput
-
 let world = world1
 
+let userNameInput
 const user = new User(100, 100, 12, Color.random(), '', world.spawn)
+
 let users = []
 
 const socket = io.connect('http://localhost:3000')
@@ -70,7 +70,7 @@ function mouseMoved(event) {
 function draw() {
   window.requestAnimationFrame(draw)
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
-  ctx.fillText(fpsCounter.fps, 20, 20)
+  ctx.fillText(fpsCounter.fps, 1000, 20)
   world.walls.forEach(w => {
     if (w.hasCollision) {
       resolveCollisionCircleRectangle(user, w)
