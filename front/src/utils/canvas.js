@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 export function getMousePos(canvas, evt) {
   var rect = canvas.getBoundingClientRect()
   return {
@@ -5,3 +6,5 @@ export function getMousePos(canvas, evt) {
     y: evt.clientY - rect.top
   }
 }
+
+export const pixelRatio = get(window, 'devicePixelRatio', 1)
