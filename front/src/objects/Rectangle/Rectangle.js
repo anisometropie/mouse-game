@@ -1,4 +1,5 @@
 import Point from 'objects/Point'
+import { circleIntersectsRectangle } from 'engine/physics'
 
 class Rectangle {
   constructor(x, y, width, height, color, hasCollision = false, kills = false) {
@@ -43,10 +44,22 @@ class Rectangle {
     Rectangle.translate(this, vector)
   }
 
+  hasUserFallenInTrap(user) {
+    if (circleIntersectsRectangle(user, this) && this.kills) {
+      return true
+    }
+
+    return false
+  }
+
   display(ctx, useOwnColor = true) {
     const { x, y, width, height } = this
     if (useOwnColor) {
-      ctx.fillStyle = this.color ? this.color.hexString : '#000000'
+      ctx.fillStyle = this.color
+        ? this.color.hexString
+        : this.kills
+        ? 'red'
+        : '#000000'
     }
     ctx.fillRect(x, y, width, height)
   }
