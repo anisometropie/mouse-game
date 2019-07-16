@@ -1,76 +1,38 @@
 import io from 'socket.io-client'
 import { get } from 'lodash'
+
 import { fpsCounter } from 'utils/FpsCounter'
-import { getMousePos } from 'utils/helpers'
+import { setPointerLock } from 'engine/pointerLock'
+import { getMousePos, pixelRatio } from 'utils/canvas'
 import {
   circleIntersectsRectangle,
   segmentIntersectsCircle,
   resolveWorldBordersCircleCollision,
   resolveCollisionCircleRectangle
 } from 'engine/physics'
-import { setPointerLock } from 'engine/pointerLock'
 
-import TrapSystem from 'objects/TrapSystem'
 import Interval from 'objects/Interval'
+import Color from 'effects/Color'
+
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
 import User from 'objects/User'
+import TrapSystem from 'objects/TrapSystem'
 
-import Color from 'effects/Color'
-
-const pixelRatio = get(window, 'devicePixelRatio', 1)
+import world1 from 'maps/1'
 
 let userNameInput
-const spawn = new RectangleBuilder(400, 0, 50, 50)
-  .withColor(new Color('lightblue'))
-  .build()
 
-const user = new User(100, 100, 12, Color.random(), '', spawn)
+let world = world1
+
+const user = new User(100, 100, 12, Color.random(), '', world.spawn)
 let users = []
-const walls = [spawn]
-const movableWalls = []
-const traps = []
-walls.push(new RectangleBuilder(50, 200, 200, 520).makeCollide().build())
-walls.push(new RectangleBuilder(450, 300, 200, 120).build())
-movableWalls.push(
-  new RectangleBuilder(500, 500, 20, 20)
-    .makeMovable()
-    .makeCollide()
-    .withPath([new Point(100, 100), new Point(500, 100), new Point(300, 300)])
-    .withVelocity(2)
-    .build()
-)
-const trapSystem = new TrapSystem(
-  400,
-  600,
-  [
-    {
-      traps: [new RectangleBuilder(0, 0, 100, 100).build()],
-      timing: new Interval('[0, 500['),
-      on: true
-    },
-    {
-      traps: [new RectangleBuilder(0, 100, 100, 100).build()],
-      timing: new Interval('[1000, 1500]'),
-      on: false
-    }
-  ],
-  2000
-)
-traps.push(trapSystem)
-
-// for (let i = 0; i < 10; i++) {
-//   for (let j = 0; j < 10; j++) {
-//     walls.push(new Rectangle(50 + 36 * i + 12 * j, 200 + 36 * j, 18, 12))
-//   }
-// }
 
 const socket = io.connect('http://localhost:3000')
 socket.emit('user connects', user)
 socket.on('users', data => {
   users = data.map(d => new User(d.x, d.y, d.radius, d.color, d.name))
-  window.requestAnimationFrame(draw)
 })
 socket.on('send user own id', data => {
   user.id = data
@@ -94,7 +56,7 @@ function mouseMoved(event) {
   )
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
-  for (const w of walls) {
+  for (const w of world.walls) {
     if (w.hasCollision) resolveCollisionCircleRectangle(user, w)
   }
   const data = {
@@ -109,20 +71,20 @@ function draw() {
   window.requestAnimationFrame(draw)
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.fillText(fpsCounter.fps, 20, 20)
-  walls.forEach(w => {
+  world.walls.forEach(w => {
     if (w.hasCollision) {
       resolveCollisionCircleRectangle(user, w)
     }
     w.display(ctx)
   })
-  movableWalls.forEach(w => {
+  world.movableWalls.forEach(w => {
     w.walkPath()
     if (w.hasCollision) {
       resolveCollisionCircleRectangle(user, w)
     }
     w.display(ctx)
   })
-  traps.forEach(t => {
+  world.traps.forEach(t => {
     t.display(ctx)
     if (t.hasUserFallenInTrap(user)) {
       user.kill()
