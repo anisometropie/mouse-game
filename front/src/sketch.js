@@ -25,7 +25,14 @@ import world1 from 'maps/1'
 let world = world1
 
 let userNameInput
-const user = new User(100, 100, 12, Color.random(), '', world.spawn)
+const user = new User(
+  world.spawn.center.x,
+  world.spawn.center.y,
+  12,
+  Color.random(),
+  '',
+  world.spawn
+)
 
 let users = []
 
