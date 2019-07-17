@@ -5,7 +5,7 @@ import Interval from 'objects/Interval'
 import Color from 'effects/Color'
 
 import crusher from 'maps/props/crusher'
-import CheckerboardBuilder from 'maps/props/checkerboard'
+import CheckerboardBuilder from 'maps/props/CheckerboardBuilder'
 
 const spawn = new RectangleBuilder(20, 20, 100, 100)
   .withColor(new Color('lightblue'))
