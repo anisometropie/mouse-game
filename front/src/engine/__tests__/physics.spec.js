@@ -1,4 +1,4 @@
-import { Rectangle } from 'objects/Rectangle'
+import Rectangle from 'objects/Rectangle'
 import Point from 'objects/Point'
 import Circle from 'objects/Circle'
 
