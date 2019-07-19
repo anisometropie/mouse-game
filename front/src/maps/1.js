@@ -1,4 +1,5 @@
 import RectangleBuilder from 'objects/Rectangle'
+import Wall from 'maps/props/Wall'
 import Point from 'objects/Point'
 import TrapSystem from 'objects/TrapSystem'
 import Interval from 'objects/Interval'
@@ -11,25 +12,37 @@ const spawn = new RectangleBuilder(20 * 2, 100 * 2, 80 * 2, 80 * 2)
 // WALLS
 const walls = [
   spawn,
-  new RectangleBuilder(0 * 2, 80 * 2, 20 * 2, 120 * 2).makeCollide().build(),
-  new RectangleBuilder(20 * 2, 80 * 2, 80 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(80 * 2, 40 * 2, 20 * 2, 40 * 2).makeCollide().build(),
-  new RectangleBuilder(100 * 2, 40 * 2, 80 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(160 * 2, 0 * 2, 20 * 2, 40 * 2).makeCollide().build(),
-  new RectangleBuilder(180 * 2, 0 * 2, 100 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(260 * 2, 20 * 2, 20 * 2, 80 * 2).makeCollide().build(),
-  new RectangleBuilder(280 * 2, 80 * 2, 40 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(300 * 2, 100 * 2, 20 * 2, 100 * 2).makeCollide().build(),
-  new RectangleBuilder(220 * 2, 180 * 2, 80 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(220 * 2, 200 * 2, 20 * 2, 40 * 2).makeCollide().build(),
-  new RectangleBuilder(160 * 2, 220 * 2, 60 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(120 * 2, 200 * 2, 20 * 2, 40 * 2).makeCollide().build(),
-  new RectangleBuilder(100 * 2, 140 * 2, 40 * 2, 60 * 2).makeCollide().build(),
-  new RectangleBuilder(140 * 2, 140 * 2, 100 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(160 * 2, 80 * 2, 20 * 2, 60 * 2).makeCollide().build(),
-  new RectangleBuilder(220 * 2, 80 * 2, 20 * 2, 60 * 2).makeCollide().build(),
-  new RectangleBuilder(180 * 2, 80 * 2, 40 * 2, 20 * 2).makeCollide().build(),
-  new RectangleBuilder(20 * 2, 180 * 2, 80 * 2, 20 * 2).makeCollide().build()
+  ...new Wall(
+    [
+      new Point(240, 480),
+      new Point(240, 360),
+      new Point(0, 360),
+      new Point(0, 160),
+      new Point(160, 160),
+      new Point(160, 80),
+      new Point(320, 80),
+      new Point(320, 0),
+      new Point(520, 0),
+      new Point(520, 160),
+      new Point(600, 160),
+      new Point(600, 360),
+      new Point(440, 360),
+      new Point(440, 440),
+      new Point(320, 440)
+    ],
+    40
+  ).rectangles,
+  ...new Wall(
+    [
+      new Point(280, 280),
+      new Point(440, 280),
+      new Point(440, 160),
+      new Point(320, 160),
+      new Point(320, 280)
+    ],
+    40
+  ).rectangles,
+  new RectangleBuilder(200, 280, 80, 80).makeCollide().build()
 ]
 
 // MOVABLE WALLS
@@ -63,20 +76,5 @@ const traps = [
     2000
   )
 ]
-// traps.push(
-//   new CheckerboardBuilder(600, 20)
-//     .withSize(5, 1)
-//     .withCellSize(50, 100)
-//     .withTiming(new Interval('[0, 500['), new Interval('[1000, 1500]'))
-//     .withCycleDuration(2000)
-//     .build(),
-//   new CheckerboardBuilder(200, 20)
-//     .withSize(5, 1)
-//     .withCellSize(50, 100)
-//     .withTiming(new Interval('[0, 500['), new Interval('[1000, 1500]'))
-//     .withCycleDuration(2000)
-//     .build()
-// )
-// traps.push(new RectangleBuilder(20, 140, 800, 20).makeKill().build())
 
 export default { spawn, walls, movableWalls, traps }
