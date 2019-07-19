@@ -11,6 +11,11 @@ class User extends Circle {
     this.name = name
   }
 
+  showCoords(ctx) {
+    const { x, y } = this.center
+    ctx.fillText(`${x} ${y}`, x + 12, y + 12)
+  }
+
   kill() {
     const { x, y } = this.spawnPoint.center
     this.move(x, y)
