@@ -1,4 +1,6 @@
-import Rectangle from 'objects/Rectangle'
+import { Rectangle } from '../Rectangle'
+
+jest.mock('engine/physics')
 
 describe('Rectangle class', () => {
   it('should return its correct vertices coordinates', () => {

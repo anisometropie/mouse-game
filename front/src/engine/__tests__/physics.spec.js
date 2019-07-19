@@ -1,4 +1,4 @@
-import Rectangle from 'objects/Rectangle'
+import { Rectangle } from 'objects/Rectangle'
 import Point from 'objects/Point'
 import Circle from 'objects/Circle'
 
@@ -7,6 +7,8 @@ import {
   segmentIntersectsCircle,
   circleIntersectsRectangle
 } from '../physics'
+
+jest.mock('sketch')
 
 describe('point in rectangle function', () => {
   it('should return true if point is inside square', () => {
