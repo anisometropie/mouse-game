@@ -11,6 +11,9 @@ class Circle {
     this.color = color
   }
 
+  clone() {
+    return new Circle(this.x, this.y, this.radius, this.color)
+  }
   /**
    * Moves the circle to given coordinates
    * you can provide either a point Object or x,y coords directly
