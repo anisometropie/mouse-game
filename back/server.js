@@ -1,5 +1,6 @@
 const express = require('express')
 const socket = require('socket.io')
+const chalk = require('chalk')
 
 const app = express()
 const server = app.listen(process.env.PORT || 3000, () => {
@@ -12,7 +13,8 @@ const users = {}
 const io = socket(server)
 io.on('connection', socket => {
   socket.on('user connects', data => {
-    console.log('connect', socket.id)
+    const { red, green, blue } = data.color
+    console.log('New connection', chalk.rgb(red, green, blue)(socket.id))
     users[socket.id] = { ...data, id: socket.id }
     socket.emit('send user own id', socket.id)
   })
@@ -24,7 +26,8 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    console.log('diconnect', socket.id)
+    const { red, green, blue } = users[socket.id].color
+    console.log('diconnect', chalk.rgb(red, green, blue)(socket.id))
     delete users[socket.id]
     socket.broadcast.emit('users', Object.values(users))
   })

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.2",
     "express": "^4.14.1",
     "socket.io": "^1.7.3"
   },
