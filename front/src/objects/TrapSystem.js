@@ -54,7 +54,7 @@ class TrapSystem {
 
   display(ctx) {
     for (let g of this.groups) {
-      ctx.fillStyle = g.on ? 'red' : 'green'
+      ctx.fillStyle = g.on ? 'red' : 'lime'
       for (let t of g.traps) {
         t.display(ctx, false)
       }
