@@ -31,7 +31,6 @@ class Circle {
    * @param {number} [y]
    */
   translate(x, y) {
-    console.log(`translate to ${x.x} ${x.y}`)
     this.center.translate(x, y)
   }
 

@@ -8,7 +8,8 @@ import {
   circleIntersectsRectangle,
   segmentIntersectsCircle,
   resolveWorldBordersCircleCollision,
-  resolveCollisionCircleRectangle
+  resolveCollisionCircleRectangle,
+  stepCollisionResolve
 } from 'engine/physics'
 
 import Interval from 'objects/Interval'
@@ -64,7 +65,7 @@ function mouseMoved(event) {
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
   for (const w of world.walls) {
-    if (w.hasCollision) resolveCollisionCircleRectangle(user, w)
+    if (w.hasCollision) stepCollisionResolve(user, w)
   }
   const data = {
     newX: user.coords.x,

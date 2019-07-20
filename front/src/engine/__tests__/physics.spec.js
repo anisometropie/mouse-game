@@ -5,7 +5,8 @@ import Circle from 'objects/Circle'
 import {
   isPointInRectangle,
   segmentIntersectsCircle,
-  circleIntersectsRectangle
+  circleIntersectsRectangle,
+  stepCollisionResolve
 } from '../physics'
 
 jest.mock('sketch')
@@ -169,5 +170,16 @@ describe('circle Intersects Rectangle function', () => {
         })
       })
     })
+  })
+})
+
+describe('step collision resolve', () => {
+  it('should prevent circle from going through the wall if velocity is too high', () => {
+    const rectangle = new Rectangle(40, -100, 30, 200)
+    const circle = new Circle(0, 0, 10)
+    circle.translate(100, 0)
+    stepCollisionResolve(circle, rectangle)
+    expect(circle.center.x).toEqual(30)
+    expect(circle.center.y).toEqual(0)
   })
 })

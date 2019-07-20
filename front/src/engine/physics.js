@@ -93,13 +93,25 @@ export const resolveCollisionCircleRectangle = (circle, rectangle) => {
   }
 }
 
-// STEP COLLISION RESOLVER
-// const previousPos = new Point(
-//   circle.center.previousX,
-//   circle.center.previousY
-// )
-// const mainDisplacement = Vector.fromPoints(previousPos, circle.coords)
-// const stepDisplacement = Vector.fromPolar(
-//   mainDisplacement.length / steps,
-//   mainDisplacement.angle
-// )
+export const stepCollisionResolve = (circle, rectangle) => {
+  const steps = 4
+  const previousPos = new Point(
+    circle.center.previousX,
+    circle.center.previousY
+  )
+  const mainDisplacement = Vector.fromPoints(previousPos, circle.coords)
+  const stepDisplacement = Vector.fromPolar(
+    mainDisplacement.length / steps,
+    mainDisplacement.angle
+  )
+  circle.move(previousPos)
+  for (let i = 0; i < steps; i++) {
+    circle.translate(stepDisplacement)
+    if (circleIntersectsRectangle(circle, rectangle)) {
+      resolveCollisionCircleRectangle(circle, rectangle)
+      break
+    }
+  }
+  circle.center.previousX = previousPos.x
+  circle.center.previousY = previousPos.y
+}
