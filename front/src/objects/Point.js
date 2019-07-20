@@ -1,4 +1,5 @@
 import Vector from 'objects/Vector'
+import { has, isNumber } from 'lodash'
 
 class Point {
   constructor(x, y) {
@@ -12,26 +13,50 @@ class Point {
     return new Point(this.x, this.y)
   }
 
+  /**
+   * Moves the point to given coordinates
+   * you can provide either a point Object or x,y coords directly
+   * @param {Point} point
+   * @param {number|Point} x
+   * @param {number} [y]
+   */
   static move(point, x, y) {
     point.previousX = point.x
     point.previousY = point.y
-    point.x = x
-    point.y = y
+    if (has(x, 'x')) {
+      point.x = x.x
+      point.y = x.y
+    } else if (isNumber(x) && isNumber(y)) {
+      point.x = x
+      point.y = y
+    }
   }
 
   move(x, y) {
     Point.move(this, x, y)
   }
 
-  static translate(point, vector) {
+  /**
+   * Translates the point by a vector
+   * you can provide either a vector Object or x,y coords directly
+   * @param {Point} point
+   * @param {number|Vector} x
+   * @param {number} [y]
+   */
+  static translate(point, x, y) {
     point.previousX = point.x
     point.previousY = point.y
-    point.x += vector.x
-    point.y += vector.y
+    if (has(x, 'x')) {
+      point.x += x.x
+      point.y += x.y
+    } else if (isNumber(x) && isNumber(y)) {
+      point.x += x
+      point.y += y
+    }
   }
 
-  translate(vector) {
-    Point.translate(this, vector)
+  translate(x, y) {
+    Point.translate(this, x, y)
   }
 
   static translated(point, vector) {

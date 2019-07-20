@@ -11,14 +11,22 @@ class Circle {
     this.color = color
   }
 
+  /**
+   * Translates the circle by a vector
+   * you can provide either a vector Object or x,y coords directly
+   * @param {number|Vector} x
+   * @param {number} [y]
+   */
   translate(x, y) {
-    if (has(x, 'x')) {
-      this.center.translate(x)
-    } else if (isNumber(x) && isNumber(y)) {
-      this.center.translate(new Vector(x, y))
-    }
+    this.center.translate(x, y)
   }
 
+  /**
+   * Moves the circle to given coordinates
+   * you can provide either a point Object or x,y coords directly
+   * @param {number|Point} x
+   * @param {number} [y]
+   */
   move(x, y) {
     this.center.move(x, y)
   }
