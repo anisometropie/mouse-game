@@ -12,16 +12,6 @@ class Circle {
   }
 
   /**
-   * Translates the circle by a vector
-   * you can provide either a vector Object or x,y coords directly
-   * @param {number|Vector} x
-   * @param {number} [y]
-   */
-  translate(x, y) {
-    this.center.translate(x, y)
-  }
-
-  /**
    * Moves the circle to given coordinates
    * you can provide either a point Object or x,y coords directly
    * @param {number|Point} x
@@ -29,6 +19,17 @@ class Circle {
    */
   move(x, y) {
     this.center.move(x, y)
+  }
+
+  /**
+   * Translates the circle by a vector
+   * you can provide either a vector Object or x,y coords directly
+   * @param {number|Vector} x
+   * @param {number} [y]
+   */
+  translate(x, y) {
+    console.log(`translate to ${x.x} ${x.y}`)
+    this.center.translate(x, y)
   }
 
   get coords() {
