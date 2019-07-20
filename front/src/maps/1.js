@@ -1,5 +1,5 @@
 import RectangleBuilder from 'objects/Rectangle'
-import Wall from 'maps/props/Wall'
+import Wall from 'objects/complex/Wall'
 import Point from 'objects/Point'
 import TrapSystem from 'objects/TrapSystem'
 import Interval from 'objects/Interval'
