@@ -42,7 +42,14 @@ class TrapSystem {
    */
   setTimestamp(timestamp) {
     this.timestamp = timestamp
-    this.timeShift = (new Date() - timestamp) % this.cycleLength
+    this.setTimeShift()
+  }
+
+  setTimeShift() {
+    this.currentTime = 0
+    this.timeShift = (new Date() - this.timestamp) % this.cycleLength
+    clearInterval(this.loop)
+    this.loop = setInterval(this.toggleTraps.bind(this), TRAP_TIMING_STEP)
   }
 
   toggleTraps() {

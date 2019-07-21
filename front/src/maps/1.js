@@ -81,5 +81,10 @@ const traps = [
 getMap(1).then(data => {
   traps[0].setTimestamp(data.timestamp)
 })
+document.onvisibilitychange = () => {
+  if (!document.hidden) {
+    traps[0].setTimeShift()
+  }
+}
 
 export default { spawn, walls, movableWalls, traps }
