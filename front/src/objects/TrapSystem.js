@@ -26,6 +26,8 @@ class TrapSystem {
     this.groups = groups
     this.cycleLength = cycleLength
     this.currentTime = 0
+    this.timestamp = 0
+    this.timeShift = 0
     this.loop = setInterval(this.toggleTraps.bind(this), TRAP_TIMING_STEP)
     const vector = new Vector(this.x, this.y)
     for (let g of this.groups) {
@@ -35,14 +37,23 @@ class TrapSystem {
     }
   }
 
+  /**
+   * defines where the zero should be
+   */
+  setTimestamp(timestamp) {
+    this.timestamp = timestamp
+    this.timeShift = (new Date() - timestamp) % this.cycleLength
+  }
+
   toggleTraps() {
+    const relativeTime = (this.currentTime + this.timeShift) % this.cycleLength
     for (let g of this.groups) {
-      if (g.timing.contains(this.currentTime) && !g.on) {
+      if (g.timing.contains(relativeTime) && !g.on) {
         g.on = true
         for (let t of g.traps) {
           t.kills = true
         }
-      } else if (!g.timing.contains(this.currentTime) && g.on) {
+      } else if (!g.timing.contains(relativeTime) && g.on) {
         g.on = false
         for (let t of g.traps) {
           t.kills = false

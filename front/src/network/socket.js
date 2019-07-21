@@ -1,8 +1,7 @@
 import io from 'socket.io-client'
 import User from 'objects/User'
 import { user, users } from 'sketch'
-
-const url = 'http://localhost:3000'
+import { url } from './api'
 
 const socket = io.connect(url)
 
