@@ -1,24 +1,8 @@
-const express = require('express')
 const socket = require('socket.io')
-const chalk = require('chalk')
 const { isEmpty, get } = require('lodash')
 
-const { withColor } = require('./utils/console.js')
-
-const app = express()
-const server = app.listen(process.env.PORT || 3000, () => {
-  console.log(`app is running on port ${process.env.PORT || 3000}`)
-})
-app.use(express.static('public'))
-
-const users = {
-  // —— example ——
-  // center: {previousX: 120, previousY: 280, x: 120, y: 280}
-  // color: {red: 77, green: 204, blue: 121, hexString: "#4dcc79"}
-  // id: "UEWGEPZMPQgHYguAAAAO"
-  // name: ""
-  // radius: 12
-}
+const { server, users, maps } = require('./server')
+const { withColor } = require('./utils/console')
 
 const io = socket(server)
 io.on('connection', socket => {
