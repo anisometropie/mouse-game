@@ -21,18 +21,20 @@ import Point from 'objects/Point'
 import User from 'objects/User'
 import TrapSystem from 'objects/TrapSystem'
 
-import world1 from 'maps/1'
+import { loadMap } from 'utils/maps'
 
-let world = world1
+let currentWorld
+currentWorld = loadMap('world1')
+
 export const users = {}
 
 export const user = new User(
-  world.spawn.center.x,
-  world.spawn.center.y,
+  currentWorld.spawn.center.x,
+  currentWorld.spawn.center.y,
   12,
   Color.random(),
   '',
-  world.spawn
+  currentWorld.spawn
 )
 
 server.userConnects(user)
@@ -55,7 +57,7 @@ function mouseMoved(event) {
   )
   user.translate(displacement)
   resolveWorldBordersCircleCollision(user)
-  for (const w of world.walls) {
+  for (const w of currentWorld.walls) {
     if (w.hasCollision) stepCollisionResolve(user, w)
   }
   server.updateUserPosition(user)
@@ -65,20 +67,20 @@ function draw() {
   window.requestAnimationFrame(draw)
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
   ctx.fillText(fpsCounter.fps, 1000, 20)
-  world.walls.forEach(w => {
+  currentWorld.walls.forEach(w => {
     if (w.hasCollision && resolveCollisionCircleRectangle(user, w)) {
       server.updateUserPosition(user)
     }
     w.display(ctx)
   })
-  world.movableWalls.forEach(w => {
+  currentWorld.movableWalls.forEach(w => {
     w.walkPath()
     if (w.hasCollision && resolveCollisionCircleRectangle(user, w)) {
       server.updateUserPosition(user)
     }
     w.display(ctx)
   })
-  world.traps.forEach(t => {
+  currentWorld.traps.forEach(t => {
     t.display(ctx)
     if (t.hasUserFallenInTrap(user)) {
       user.kill()

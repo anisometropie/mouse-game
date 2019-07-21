@@ -1,5 +1,3 @@
-import { getMap } from 'network/api'
-
 import RectangleBuilder from 'objects/Rectangle'
 import Wall from 'objects/complex/Wall'
 import Point from 'objects/Point'
@@ -78,13 +76,5 @@ const traps = [
     2000
   )
 ]
-getMap(1).then(data => {
-  traps[0].setTimestamp(data.timestamp)
-})
-document.onvisibilitychange = () => {
-  if (!document.hidden) {
-    traps[0].setTimeShift()
-  }
-}
 
 export default { spawn, walls, movableWalls, traps }
