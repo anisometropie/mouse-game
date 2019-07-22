@@ -39,6 +39,7 @@ export const user = new User(
 
 server.userConnects(user)
 
+// CANVAS
 export const WIDTH = window.innerWidth
 export const HEIGHT = window.innerHeight
 const canvas = document.getElementById('canvas') || {

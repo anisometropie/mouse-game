@@ -42,7 +42,27 @@ const walls = [
     ],
     40
   ).rectangles,
-  new RectangleBuilder(200, 280, 80, 80).makeCollide().build()
+  new RectangleBuilder(200, 280, 80, 80).makeCollide().build(),
+  // ** 2nd part **
+  ...new Wall(
+    [
+      new Point(240, 440),
+      new Point(80, 440),
+      new Point(80, 520),
+      new Point(40, 520),
+      new Point(40, 680),
+      new Point(120, 680)
+    ],
+    40
+  ).rectangles,
+  ...new Wall(
+    [new Point(320, 480), new Point(320, 520), new Point(160, 520)],
+    40
+  ).rectangles,
+  ...new Wall(
+    [new Point(200, 560), new Point(200, 680), new Point(160, 680)],
+    40
+  ).rectangles
 ]
 
 // MOVABLE WALLS
@@ -75,6 +95,27 @@ const traps = [
     ],
     2000
   )
+  // new TrapSystem(
+  //   0,
+  //   0,
+  //   [
+  //     {
+  //       traps: [new RectangleBuilder(200, 500, 100, 400).build()],
+  //       timing: new Interval('[0, 900[')
+  //     },
+  //     {
+  //       traps: [new RectangleBuilder(300, 500, 100, 400).build()],
+  //       timing: new Interval('[1000, 1900]')
+  //     }
+  //   ],
+  //   2000
+  // )
 ]
 
-export default { spawn, walls, movableWalls, traps }
+// CHECKPOINTS
+const checkPoints = [
+  new RectangleBuilder(20 * 2, 100 * 2, 80 * 2, 80 * 2)
+    .withColor(new Color('lightblue'))
+    .build()
+]
+export default { spawn, walls, movableWalls, traps, checkPoints }
