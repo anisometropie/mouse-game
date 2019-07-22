@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './src/sketch.js',
+  entry: './src/index.js',
   output: {
     path: __dirname,
     filename: 'bundle.js'
@@ -12,7 +12,19 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          }
+        ]
       }
     ]
-  }
+  },
+  mode: 'development'
 }
