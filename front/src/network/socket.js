@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 import User from 'objects/User'
-import { user, users } from 'sketch'
+import { user, users } from 'components/Game'
 import { url } from './api'
 
 const socket = io.connect(url)
