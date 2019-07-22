@@ -23,8 +23,7 @@ import TrapSystem from 'objects/TrapSystem'
 
 import { loadMap } from 'utils/maps'
 
-let currentWorld
-currentWorld = loadMap('world1')
+let currentWorld = loadMap('world1')
 
 export const users = {}
 
@@ -46,7 +45,7 @@ const canvas = document.getElementById('canvas') || {
   getContext: () => {},
   setAttribute: () => {}
 }
-export const ctx = canvas.getContext('2d')
+const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', WIDTH)
 canvas.setAttribute('height', HEIGHT)
 setPointerLock(canvas, mouseMoved)
