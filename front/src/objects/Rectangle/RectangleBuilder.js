@@ -12,8 +12,22 @@ class RectangleBuilder {
     this.height = height
   }
 
+  fromObject(source) {
+    Object.assign(this, source)
+    return this
+  }
+
   makeMovable() {
     this.isMovable = true
+    return this
+  }
+
+  withColor(v1, v2, v3) {
+    if (isObject(v1)) {
+      this.color = v1
+    } else {
+      this.color = new Color(v1, v2, v3)
+    }
     return this
   }
 
@@ -34,15 +48,6 @@ class RectangleBuilder {
 
   withVelocity(velocity) {
     this.velocity = velocity
-    return this
-  }
-
-  withColor(red, green, blue) {
-    if (isObject(red)) {
-      this.color = red
-    } else {
-      this.color = new Color(red, green, blue)
-    }
     return this
   }
 
