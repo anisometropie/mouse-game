@@ -7,7 +7,7 @@ class Color {
    * @param {number} v2 — decimal green value
    * @param {number} v3 — decimal blue value
    */
-  constructor(v1, v2, v3) {
+  constructor(v1 = 0, v2 = 0, v3 = 0) {
     if (isString(v1)) {
       const { red, green, blue } = hexToRgb(colors[v1])
       this.red = red
