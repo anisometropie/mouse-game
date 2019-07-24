@@ -11,7 +11,6 @@ const spawn = new RectangleBuilder(20 * 2, 100 * 2, 80 * 2, 80 * 2)
 
 // WALLS
 const walls = [
-  spawn,
   ...new Wall(
     [
       new Point(240, 480),
@@ -113,9 +112,9 @@ const traps = [
 ]
 
 // CHECKPOINTS
-const checkPoints = [
+const checkpoints = [
   new RectangleBuilder(20 * 2, 100 * 2, 80 * 2, 80 * 2)
     .withColor(new Color('lightblue'))
     .build()
 ]
-export default { spawn, walls, movableWalls, traps, checkPoints }
+export default { spawn, walls, movableWalls, traps, checkpoints }

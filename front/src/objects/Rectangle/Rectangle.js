@@ -44,7 +44,7 @@ class Rectangle {
     Rectangle.translate(this, vector)
   }
 
-  hasUserFallenInTrap(user) {
+  hasUserWalkedIn(user) {
     if (circleIntersectsRectangle(user, this) && this.kills) {
       return true
     }

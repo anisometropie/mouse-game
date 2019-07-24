@@ -79,7 +79,7 @@ class TrapSystem {
     }
   }
 
-  hasUserFallenInTrap(user) {
+  hasUserWalkedIn(user) {
     for (let g of this.groups) {
       for (let t of g.traps) {
         if (circleIntersectsRectangle(user, t) && g.on) {

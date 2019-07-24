@@ -33,7 +33,7 @@ class MapEditor extends React.Component {
         walls: [],
         movableWalls: [],
         traps: [],
-        checkPoints: []
+        checkpoints: []
       },
       currentTool: { size: 40 },
       toolOptions: {},
@@ -206,7 +206,7 @@ class MapEditor extends React.Component {
   }
 
   render() {
-    const { testMode } = this.state
+    const { currentWorld, testMode } = this.state
     return (
       <div id="mainContainer">
         <div>
@@ -227,7 +227,7 @@ class MapEditor extends React.Component {
           </button>
         </div>
         {testMode ? (
-          <Game />
+          <Game world={currentWorld} />
         ) : (
           <canvas
             onMouseMove={this.mouseMoved}
