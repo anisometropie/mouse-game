@@ -35,8 +35,9 @@ class MapEditor extends React.Component {
         traps: [],
         checkpoints: []
       },
-      currentTool: { size: 40 },
-      toolOptions: {},
+      tool: 'rectangle',
+      toolOptions: { rectangle: {}, spawn: {}, checkpoint: {} },
+      size: 40,
       color: new Color(),
       path: [],
       velocity: 0,
@@ -89,9 +90,7 @@ class MapEditor extends React.Component {
   }
 
   mouseMoved = event => {
-    const {
-      currentTool: { size }
-    } = this.state
+    const { size } = this.state
     const mouse = getMousePos(this.canvas.current, event)
     this.setState({ gridPosition: pixelToGrid(mouse, size) })
   }
@@ -109,7 +108,8 @@ class MapEditor extends React.Component {
 
   mouseUp = () => {
     const {
-      currentTool: { size },
+      size,
+      tool,
       toolOptions,
       currentWorld,
       gridPosition,
@@ -117,37 +117,56 @@ class MapEditor extends React.Component {
     } = this.state
     const options = {
       ...computeRectangle(shapeBeingDrawn, gridPosition, size),
-      ...toolOptions
+      ...toolOptions[tool]
     }
+    const category =
+      tool === 'rectangle'
+        ? toolOptions[tool].isMovable
+          ? 'movableWalls'
+          : toolOptions[tool].kills
+          ? 'traps'
+          : 'walls'
+        : tool === 'checkpoint'
+        ? 'checkpoints'
+        : tool
     this.setState({
       currentWorld: {
         ...currentWorld,
-        walls: [
-          ...currentWorld.walls,
-          new RectangleBuilder().fromObject(options).build()
-        ]
+        [category]:
+          tool === 'spawn'
+            ? new RectangleBuilder().fromObject(options).build()
+            : [
+                ...currentWorld[category],
+                new RectangleBuilder().fromObject(options).build()
+              ]
       },
       shapeBeingDrawn: null
     })
   }
 
   handleCheckboxChange = event => {
-    const { toolOptions } = this.state
+    const { tool, toolOptions } = this.state
     const { value: id } = event.target
     // if the option exists, remove it
     if (toolOptions[id]) {
-      const { [id]: removedKey, ...newOptions } = toolOptions
+      const { [id]: removedKey, ...newOptions } = toolOptions[tool]
       this.setState({
-        toolOptions: newOptions
+        toolOptions: { ...toolOptions, [tool]: newOptions }
       })
     } else {
       this.setState({
         toolOptions: {
           ...toolOptions,
-          [id]: get(this.state, id, true)
+          [tool]: {
+            [id]: get(this.state, id, true)
+          }
         }
       })
     }
+  }
+
+  handleToolChange = event => {
+    this.setState({ tool: event.target.value })
   }
 
   toogleTestMode = () => {
@@ -157,8 +176,9 @@ class MapEditor extends React.Component {
   }
 
   updateDrawing = () => {
-    const { toolOptions, color } = this.state
-    if (toolOptions.color) {
+    const { tool, toolOptions } = this.state
+    const { color } = toolOptions[tool]
+    if (color) {
       this.ctx.fillStyle = color.hexString
     } else {
       this.ctx.fillStyle = 'black'
@@ -167,22 +187,28 @@ class MapEditor extends React.Component {
 
   draw = () => {
     const {
-      currentWorld,
-      currentTool: { size },
+      currentWorld: { spawn, walls, movableWalls, traps, checkpoints },
+      size,
       gridPosition,
       shapeBeingDrawn
     } = this.state
     this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
-    currentWorld.walls.forEach(w => {
+    if (spawn) spawn.display(this.ctx)
+    walls.forEach(w => {
       w.display(this.ctx)
     })
-    currentWorld.movableWalls.forEach(w => {
-      w.walkPath()
+    movableWalls.forEach(w => {
       w.display(this.ctx)
     })
-    currentWorld.traps.forEach(t => {
+    traps.forEach(t => {
+      t.display(this.ctx)
+    })
+    traps.forEach(t => {
+      t.display(this.ctx)
+    })
+    checkpoints.forEach(t => {
       t.display(this.ctx)
     })
     this.updateDrawing()
@@ -210,7 +236,27 @@ class MapEditor extends React.Component {
     return (
       <div id="mainContainer">
         <div>
-          <button className="button">Wall</button>
+          <button
+            value="rectangle"
+            onClick={this.handleToolChange}
+            className="button"
+          >
+            Rectangle
+          </button>
+          <button
+            value="spawn"
+            onClick={this.handleToolChange}
+            className="button"
+          >
+            Spawn
+          </button>
+          <button
+            value="checkpoint"
+            onClick={this.handleToolChange}
+            className="button"
+          >
+            Checkpoint
+          </button>
           <CheckboxList
             list={[
               ['isMovable', 'Movable'],
@@ -227,7 +273,7 @@ class MapEditor extends React.Component {
           </button>
         </div>
         {testMode ? (
-          <Game world={currentWorld} />
+          <Game world={currentWorld} noNetwork />
         ) : (
           <canvas
             onMouseMove={this.mouseMoved}

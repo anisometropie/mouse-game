@@ -6,7 +6,7 @@ import { loadMap } from 'utils/maps'
 class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { mode: 'game' }
+    this.state = { mode: 'editor' }
   }
   changeMode = mode => {
     this.setState({ mode })

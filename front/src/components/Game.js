@@ -45,15 +45,19 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    server.userConnects(this.user)
-    openConnection(this.user, this.users)
+    if (!this.props.noNetwork) {
+      server.userConnects(this.user)
+      openConnection(this.user, this.users)
+    }
     this.ctx = this.canvas.current.getContext('2d')
     setPointerLock(this.canvas.current, this.mouseMoved)
     this.request = window.requestAnimationFrame(this.draw)
   }
 
   componentWillUnmount() {
-    closeConnection()
+    if (!this.props.noNetwork) {
+      closeConnection()
+    }
     window.cancelAnimationFrame(this.request)
   }
 
