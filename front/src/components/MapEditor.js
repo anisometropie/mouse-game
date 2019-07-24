@@ -52,6 +52,10 @@ class MapEditor extends React.Component {
     this.request = window.requestAnimationFrame(this.draw)
   }
 
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.request)
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const stateKeys = ['testMode']
     return stateKeys.reduce(
