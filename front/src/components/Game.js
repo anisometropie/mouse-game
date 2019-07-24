@@ -75,27 +75,35 @@ class Game extends React.Component {
   }
 
   draw = () => {
+    const { spawn, walls, movableWalls, traps, checkpoints } = this.currentWorld
     this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, 1000, 20)
-    this.currentWorld.walls.forEach(w => {
+    spawn.display(this.ctx)
+    walls.forEach(w => {
       if (w.hasCollision && resolveCollisionCircleRectangle(this.user, w)) {
         server.updateUserPosition(this.user)
       }
       w.display(this.ctx)
     })
-    this.currentWorld.movableWalls.forEach(w => {
+    movableWalls.forEach(w => {
       w.walkPath()
       if (w.hasCollision && resolveCollisionCircleRectangle(this.user, w)) {
         server.updateUserPosition(this.user)
       }
       w.display(this.ctx)
     })
-    this.currentWorld.traps.forEach(t => {
+    traps.forEach(t => {
       t.display(this.ctx)
-      if (t.hasUserFallenInTrap(this.user)) {
+      if (t.hasUserWalkedIn(this.user)) {
         this.user.kill()
         server.updateUserPosition(this.user)
+      }
+    })
+    checkpoints.forEach(c => {
+      c.display(this.ctx)
+      if (c.hasUserWalkedIn(this.user)) {
+        this.user.spawnPoint = c
       }
     })
     this.user.display(this.ctx, false)
