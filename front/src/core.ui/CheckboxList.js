@@ -1,6 +1,7 @@
 import React from 'react'
+import './CheckboxList.css'
 
-const CheckboxList = ({ list, onChange }) => {
+const CheckboxList = ({ title, list, onChange }) => {
   const checkboxes = list.map(l => {
     const id = l[0]
     const label = l[1]
@@ -11,7 +12,12 @@ const CheckboxList = ({ list, onChange }) => {
       </div>
     )
   })
-  return checkboxes
+  return (
+    <div className="list">
+      <span id="title">{title}</span>
+      {checkboxes}
+    </div>
+  )
 }
 
 export default CheckboxList

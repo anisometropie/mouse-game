@@ -3,3 +3,32 @@
   flex-direction: row;
   justify-content: flex-start;
 }
+
+#leftBar {
+  min-width: 130px;
+  height: 100%;
+}
+
+#toolBox {
+  width: 90%;
+  margin: 0 5px;
+  display: flex;
+  height: 350px;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.leftBarGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-weight: 700;
+  text-align: center;
+}
+
+.message {
+  font-size: 0.8em;
+}

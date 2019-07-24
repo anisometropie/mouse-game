@@ -1,0 +1,10 @@
+#title {
+  font-weight: 700;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

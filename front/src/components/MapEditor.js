@@ -42,7 +42,8 @@ class MapEditor extends React.Component {
       path: [],
       velocity: 0,
       shapeBeingDrawn: null,
-      testMode: false
+      testMode: false,
+      message: ''
     }
     this.canvas = React.createRef()
     this.ctx = null
@@ -58,7 +59,7 @@ class MapEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const stateKeys = ['testMode']
+    const stateKeys = ['testMode', 'message']
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
       false
@@ -67,9 +68,9 @@ class MapEditor extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { testMode } = this.state
-    if (testMode) {
+    if (testMode && !prevState.testMode) {
       window.cancelAnimationFrame(this.request)
-    } else {
+    } else if (!testMode && prevState.testMode) {
       this.ctx = this.canvas.current.getContext('2d')
       this.request = window.requestAnimationFrame(this.draw)
     }
@@ -170,9 +171,13 @@ class MapEditor extends React.Component {
   }
 
   toogleTestMode = () => {
-    this.setState({
-      testMode: !this.state.testMode
-    })
+    if (this.state.currentWorld.spawn) {
+      this.setState({
+        testMode: !this.state.testMode
+      })
+    } else {
+      this.setState({ message: 'First create a spawn' })
+    }
   }
 
   updateDrawing = () => {
@@ -232,45 +237,52 @@ class MapEditor extends React.Component {
   }
 
   render() {
-    const { currentWorld, testMode } = this.state
+    const { currentWorld, testMode, message } = this.state
     return (
       <div id="mainContainer">
-        <div>
-          <button
-            value="rectangle"
-            onClick={this.handleToolChange}
-            className="button"
-          >
-            Rectangle
-          </button>
-          <button
-            value="spawn"
-            onClick={this.handleToolChange}
-            className="button"
-          >
-            Spawn
-          </button>
-          <button
-            value="checkpoint"
-            onClick={this.handleToolChange}
-            className="button"
-          >
-            Checkpoint
-          </button>
-          <CheckboxList
-            list={[
-              ['isMovable', 'Movable'],
-              ['color', 'Color'],
-              ['hasCollision', 'Collision'],
-              ['kills', 'Kills'],
-              ['path', 'Path'],
-              ['velocity', 'Velocity']
-            ]}
-            onChange={this.handleCheckboxChange}
-          />
-          <button onClick={this.toogleTestMode}>
-            {testMode ? 'Back to Editor' : 'Test map'}
-          </button>
+        <div id="leftBar">
+          <div id="toolBox">
+            <div className="leftBarGroup">
+              <span className="title">Tool</span>
+              <button
+                value="rectangle"
+                onClick={this.handleToolChange}
+                className="button"
+              >
+                Rectangle
+              </button>
+              <button
+                value="spawn"
+                onClick={this.handleToolChange}
+                className="button"
+              >
+                Spawn
+              </button>
+              <button
+                value="checkpoint"
+                onClick={this.handleToolChange}
+                className="button"
+              >
+                Checkpoint
+              </button>
+            </div>
+            <CheckboxList
+              title="Options"
+              list={[
+                ['isMovable', 'Movable'],
+                ['color', 'Color'],
+                ['hasCollision', 'Collision'],
+                ['kills', 'Kills'],
+                ['path', 'Path'],
+                ['velocity', 'Velocity']
+              ]}
+              onChange={this.handleCheckboxChange}
+            />
+            <button onClick={this.toogleTestMode}>
+              {testMode ? 'Back to Editor' : 'Test map'}
+            </button>
+          </div>
+          <div className="message">{message}</div>
         </div>
         {testMode ? (
           <Game world={currentWorld} noNetwork />
