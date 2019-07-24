@@ -48,7 +48,11 @@ class Game extends React.Component {
     server.userConnects(user)
     this.ctx = this.canvas.current.getContext('2d')
     setPointerLock(this.canvas.current, this.mouseMoved)
-    window.requestAnimationFrame(this.draw)
+    this.request = window.requestAnimationFrame(this.draw)
+  }
+
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.request)
   }
 
   mouseMoved = event => {
@@ -65,7 +69,7 @@ class Game extends React.Component {
   }
 
   draw = () => {
-    window.requestAnimationFrame(this.draw)
+    this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, 1000, 20)
     currentWorld.walls.forEach(w => {

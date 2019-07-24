@@ -9,6 +9,7 @@ import { computeRectangle, extractRectangleData } from 'utils/objects'
 import Interval from 'objects/Interval'
 import Color from 'effects/Color'
 
+import Game from 'components/Game'
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
@@ -39,7 +40,8 @@ class MapEditor extends React.Component {
       color: new Color(),
       path: [],
       velocity: 0,
-      shapeBeingDrawn: null
+      shapeBeingDrawn: null,
+      testMode: false
     }
     this.canvas = React.createRef()
     this.ctx = null
@@ -47,16 +49,25 @@ class MapEditor extends React.Component {
 
   componentDidMount() {
     this.ctx = this.canvas.current.getContext('2d')
-    window.requestAnimationFrame(this.draw)
+    this.request = window.requestAnimationFrame(this.draw)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // const stateKeys = ['toolOptions']
-    // return stateKeys.reduce(
-    //   (acc, key) => acc || nextState[key] !== this.state[key],
-    //   false
-    // )
-    return false
+    const stateKeys = ['testMode']
+    return stateKeys.reduce(
+      (acc, key) => acc || nextState[key] !== this.state[key],
+      false
+    )
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { testMode } = this.state
+    if (testMode) {
+      window.cancelAnimationFrame(this.request)
+    } else {
+      this.ctx = this.canvas.current.getContext('2d')
+      this.request = window.requestAnimationFrame(this.draw)
+    }
   }
 
   makeJson() {
@@ -135,6 +146,12 @@ class MapEditor extends React.Component {
     }
   }
 
+  toogleTestMode = () => {
+    this.setState({
+      testMode: !this.state.testMode
+    })
+  }
+
   updateDrawing = () => {
     const { toolOptions, color } = this.state
     if (toolOptions.color) {
@@ -151,7 +168,7 @@ class MapEditor extends React.Component {
       gridPosition,
       shapeBeingDrawn
     } = this.state
-    window.requestAnimationFrame(this.draw)
+    this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
     currentWorld.walls.forEach(w => {
@@ -185,6 +202,7 @@ class MapEditor extends React.Component {
   }
 
   render() {
+    const { testMode } = this.state
     return (
       <div id="mainContainer">
         <div>
@@ -200,17 +218,24 @@ class MapEditor extends React.Component {
             ]}
             onChange={this.handleCheckboxChange}
           />
+          <button onClick={this.toogleTestMode}>
+            {testMode ? 'Back to Editor' : 'Test map'}
+          </button>
         </div>
-        <canvas
-          onMouseMove={this.mouseMoved}
-          onMouseLeave={this.mouseOut}
-          onMouseDown={this.mouseDown}
-          onMouseUp={this.mouseUp}
-          ref={this.canvas}
-          id="canvas"
-          width={WIDTH}
-          height={HEIGHT}
-        />
+        {testMode ? (
+          <Game />
+        ) : (
+          <canvas
+            onMouseMove={this.mouseMoved}
+            onMouseLeave={this.mouseOut}
+            onMouseDown={this.mouseDown}
+            onMouseUp={this.mouseUp}
+            ref={this.canvas}
+            id="canvas"
+            width={WIDTH}
+            height={HEIGHT}
+          />
+        )}
       </div>
     )
   }
