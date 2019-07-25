@@ -51,11 +51,13 @@ class MapEditor extends React.Component {
   }
 
   componentDidMount() {
+    window.onmouseup = this.mouseUp
     this.ctx = this.canvas.current.getContext('2d')
     this.request = window.requestAnimationFrame(this.draw)
   }
 
   componentWillUnmount() {
+    window.onmouseup = null
     window.cancelAnimationFrame(this.request)
   }
 
