@@ -1,5 +1,5 @@
 import React from 'react'
-import './CheckboxList.css'
+import styles from './CheckboxList.css'
 
 const CheckboxList = ({ title, list, onChange }) => {
   const checkboxes = list.map(l => {
@@ -13,8 +13,8 @@ const CheckboxList = ({ title, list, onChange }) => {
     )
   })
   return (
-    <div className="list">
-      <span id="title">{title}</span>
+    <div className={styles.list}>
+      <span id={styles.title}>{title}</span>
       {checkboxes}
     </div>
   )
