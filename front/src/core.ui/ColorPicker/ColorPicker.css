@@ -1,0 +1,27 @@
+.button {
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+}
+
+.button:focus {
+  outline: 0;
+}
+
+.buttonContainer {
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  z-index: 0;
+}
+
+.colorPickerContainer {
+  position: relative;
+  display: flex;
+}
+
+.colorPicker {
+  margin-top: 3px;
+  margin-left: -4px;
+  z-index: 99;
+}

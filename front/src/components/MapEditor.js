@@ -1,6 +1,6 @@
 import React from 'react'
-
 import { get, isArray, isEmpty } from 'lodash'
+
 import { fpsCounter } from 'utils/FpsCounter'
 import { setPointerLock } from 'engine/pointerLock'
 import { getMousePos, pixelRatio, pixelToGrid } from 'utils/canvas'
@@ -16,9 +16,10 @@ import Point from 'objects/Point'
 import User from 'objects/User'
 import TrapSystem from 'objects/TrapSystem'
 import CheckboxList from 'core.ui/CheckboxList'
+import ColorPicker from 'core.ui/ColorPicker'
 import { loadMap } from 'utils/maps'
 
-import './MapEditor.css'
+import styles from './MapEditor.css'
 
 export const WIDTH = 1000
 export const HEIGHT = 800
@@ -149,7 +150,7 @@ class MapEditor extends React.Component {
     const { tool, toolOptions } = this.state
     const { value: id } = event.target
     // if the option exists, remove it
-    if (toolOptions[id]) {
+    if (toolOptions[tool][id]) {
       const { [id]: removedKey, ...newOptions } = toolOptions[tool]
       this.setState({
         toolOptions: { ...toolOptions, [tool]: newOptions }
@@ -168,6 +169,22 @@ class MapEditor extends React.Component {
 
   handleToolChange = event => {
     this.setState({ tool: event.target.value })
+  }
+
+  handleColorChange = color => {
+    const { tool, toolOptions } = this.state
+    const newColor = new Color(color)
+    if (toolOptions[tool].color) {
+      this.setState({
+        color: newColor,
+        toolOptions: {
+          ...toolOptions,
+          [tool]: { ...toolOptions[tool], color: newColor }
+        }
+      })
+    } else {
+      this.setState({ color: newColor })
+    }
   }
 
   toogleTestMode = () => {
@@ -237,31 +254,31 @@ class MapEditor extends React.Component {
   }
 
   render() {
-    const { currentWorld, testMode, message } = this.state
+    const { currentWorld, testMode, message, color } = this.state
     return (
-      <div id="mainContainer">
-        <div id="leftBar">
-          <div id="toolBox">
-            <div className="leftBarGroup">
-              <span className="title">Tool</span>
+      <div id={styles.mainContainer}>
+        <div id={styles.leftBar}>
+          <div id={styles.toolBox}>
+            <div className={styles.leftBarGroup}>
+              <span className={styles.title}>Tool</span>
               <button
                 value="rectangle"
                 onClick={this.handleToolChange}
-                className="button"
+                className={styles.button}
               >
                 Rectangle
               </button>
               <button
                 value="spawn"
                 onClick={this.handleToolChange}
-                className="button"
+                className={styles.button}
               >
                 Spawn
               </button>
               <button
                 value="checkpoint"
                 onClick={this.handleToolChange}
-                className="button"
+                className={styles.button}
               >
                 Checkpoint
               </button>
@@ -282,7 +299,12 @@ class MapEditor extends React.Component {
               {testMode ? 'Back to Editor' : 'Test map'}
             </button>
           </div>
-          <div className="message">{message}</div>
+          <div className={styles.message}>{message}</div>
+          <ColorPicker
+            value={color.hexString}
+            noTextField
+            onChangeComplete={this.handleColorChange}
+          />
         </div>
         {testMode ? (
           <Game world={currentWorld} noNetwork />
@@ -293,7 +315,7 @@ class MapEditor extends React.Component {
             onMouseDown={this.mouseDown}
             onMouseUp={this.mouseUp}
             ref={this.canvas}
-            id="canvas"
+            id={styles.canvas}
             width={WIDTH}
             height={HEIGHT}
           />
