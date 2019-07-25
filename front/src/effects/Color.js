@@ -3,13 +3,15 @@ import { colors, hexToRgb, rgbToHex } from 'utils/colors'
 
 class Color {
   /**
-   * @param {number|string} v1 — decimal red value OR HTML color name
+   * @param {number|string} v1 — decimal red value OR HTML color name OR hexstring
    * @param {number} v2 — decimal green value
    * @param {number} v3 — decimal blue value
    */
   constructor(v1 = 0, v2 = 0, v3 = 0) {
     if (isString(v1)) {
-      const { red, green, blue } = hexToRgb(colors[v1])
+      const { red, green, blue } = hexToRgb(
+        v1.startsWith('#') ? v1 : colors[v1]
+      )
       this.red = red
       this.green = green
       this.blue = blue
