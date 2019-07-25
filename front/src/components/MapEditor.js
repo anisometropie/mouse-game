@@ -60,7 +60,7 @@ class MapEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const stateKeys = ['testMode', 'message']
+    const stateKeys = ['tool', 'testMode', 'message']
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
       false
@@ -160,6 +160,7 @@ class MapEditor extends React.Component {
         toolOptions: {
           ...toolOptions,
           [tool]: {
+            ...toolOptions[tool],
             [id]: get(this.state, id, true)
           }
         }
@@ -254,7 +255,14 @@ class MapEditor extends React.Component {
   }
 
   render() {
-    const { currentWorld, testMode, message, color } = this.state
+    const {
+      currentWorld,
+      tool,
+      toolOptions,
+      testMode,
+      message,
+      color
+    } = this.state
     return (
       <div id={styles.mainContainer}>
         <div id={styles.leftBar}>
@@ -285,14 +293,23 @@ class MapEditor extends React.Component {
             </div>
             <CheckboxList
               title="Options"
-              list={[
-                ['isMovable', 'Movable'],
-                ['color', 'Color'],
-                ['hasCollision', 'Collision'],
-                ['kills', 'Kills'],
-                ['path', 'Path'],
-                ['velocity', 'Velocity']
+              ids={[
+                'isMovable',
+                'color',
+                'hasCollision',
+                'kills',
+                'path',
+                'velocity'
               ]}
+              labels={[
+                'Movable',
+                'Color',
+                'Collision',
+                'Kills',
+                'Path',
+                'Velocity'
+              ]}
+              values={toolOptions[tool]}
               onChange={this.handleCheckboxChange}
             />
             <button onClick={this.toogleTestMode}>
