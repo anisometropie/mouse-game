@@ -38,7 +38,7 @@
       "jest-canvas-mock"
     ],
     "setupFilesAfterEnv": [
-      "<rootDir>/src/config/tests.js"
+      "<rootDir>/src/__config__/tests.js"
     ],
     "moduleNameMapper": {
       "\\.(css|less)$": "identity-obj-proxy"
