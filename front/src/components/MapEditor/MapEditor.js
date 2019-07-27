@@ -110,7 +110,8 @@ class MapEditor extends React.Component {
     this.setState({ shapeBeingDrawn: gridPosition })
   }
 
-  mouseUp = () => {
+  mouseUp = event => {
+    event.stopPropagation()
     const {
       size,
       tool,
@@ -119,33 +120,35 @@ class MapEditor extends React.Component {
       gridPosition,
       shapeBeingDrawn
     } = this.state
-    const options = {
-      ...computeRectangle(shapeBeingDrawn, gridPosition, size),
-      ...toolOptions[tool]
+    if(shapeBeingDrawn) {
+      const options = {
+        ...computeRectangle(shapeBeingDrawn, gridPosition, size),
+        ...toolOptions[tool]
+      }
+      const category =
+        tool === 'rectangle'
+          ? toolOptions[tool].isMovable
+            ? 'movableWalls'
+            : toolOptions[tool].kills
+            ? 'traps'
+            : 'walls'
+          : tool === 'checkpoint'
+          ? 'checkpoints'
+          : tool
+      this.setState({
+        currentWorld: {
+          ...currentWorld,
+          [category]:
+            tool === 'spawn'
+              ? new RectangleBuilder().fromObject(options).build()
+              : [
+                  ...currentWorld[category],
+                  new RectangleBuilder().fromObject(options).build()
+                ]
+        },
+        shapeBeingDrawn: null
+      })
     }
-    const category =
-      tool === 'rectangle'
-        ? toolOptions[tool].isMovable
-          ? 'movableWalls'
-          : toolOptions[tool].kills
-          ? 'traps'
-          : 'walls'
-        : tool === 'checkpoint'
-        ? 'checkpoints'
-        : tool
-    this.setState({
-      currentWorld: {
-        ...currentWorld,
-        [category]:
-          tool === 'spawn'
-            ? new RectangleBuilder().fromObject(options).build()
-            : [
-                ...currentWorld[category],
-                new RectangleBuilder().fromObject(options).build()
-              ]
-      },
-      shapeBeingDrawn: null
-    })
   }
 
   handleCheckboxChange = event => {
