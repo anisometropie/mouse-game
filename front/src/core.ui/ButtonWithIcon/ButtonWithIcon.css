@@ -1,0 +1,13 @@
+#container {
+  margin: 1px;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#container:hover {
+  background-color: #e6f2ff;
+}
