@@ -17,8 +17,8 @@ export default class ColorPicker extends React.Component {
     this.pickerRef = React.createRef()
   }
 
-  componentDidUpdate() {
-    const { isBeingEdited } = this.state
+  componentDidUpdate(prevProps, prevState) {
+    const { color, isBeingEdited } = this.state
     if (isBeingEdited) {
       this.pickerRef.current.focus()
     }
@@ -46,6 +46,7 @@ export default class ColorPicker extends React.Component {
 
   handleChange = value => {
     this.setState({
+      isBeingEdited: false,
       color: value
     })
   }
@@ -100,20 +101,23 @@ export default class ColorPicker extends React.Component {
                 onChangeComplete(color.hex)
               }}
               colors={[
-                '#FF6900',
-                '#FCB900',
-                '#7BDCB5',
-                '#00D084',
-                '#8ED1FC',
-                '#0693E3',
-                '#ABB8C3',
-                '#EB144C',
-                '#F78DA7',
-                '#9900EF',
-                '#AAA',
-                '#BBB',
-                '#CCC',
-                '#EEE'
+                '#000000',
+                '#ffffff',
+                '#f44336',
+                '#E91E63',
+                '#9C27B0',
+                '#673AB7',
+                '#3F51B5',
+                '#2196F3',
+                '#03A9F4',
+                '#00BCD4',
+                '#4CAF50',
+                '#8BC34A',
+                '#CDDC39',
+                '#FFEB3B',
+                '#FFC107',
+                '#FF9800',
+                '#FF5722'
               ]}
               triangle={pickerTriangle}
             />
