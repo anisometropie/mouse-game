@@ -1,4 +1,5 @@
 import Vector from 'objects/Vector'
+import Interval from 'objects/Interval'
 import { circleIntersectsRectangle } from 'engine/physics'
 
 const TRAP_TIMING_STEP = 100
@@ -20,7 +21,7 @@ class TrapSystem {
         and a timing array, which represents when the trap is on
    * @param {number} cycleLength
    */
-  constructor(x, y, groups, cycleLength) {
+  constructor(x, y, groups = [], cycleLength = 500) {
     this.x = x
     this.y = y
     this.groups = groups
@@ -68,6 +69,14 @@ class TrapSystem {
       }
     }
     this.currentTime = (this.currentTime + TRAP_TIMING_STEP) % this.cycleLength
+  }
+
+  addGroup() {
+    this.groups.push({ traps: [], timing: new Interval('[0, 0[') })
+  }
+
+  deleteGroup(index) {
+    this.groups.splice(index, 1)
   }
 
   display(ctx) {

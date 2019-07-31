@@ -1,5 +1,5 @@
 import React from 'react'
-import { get, isArray, isEmpty } from 'lodash'
+import _, { has, get, isArray, isEmpty, curry } from 'lodash'
 
 import { fpsCounter } from 'utils/FpsCounter'
 import { setPointerLock } from 'engine/pointerLock'
@@ -10,6 +10,7 @@ import Interval from 'objects/Interval'
 import Color from 'effects/Color'
 
 import Game from 'components/Game'
+import TrapEditor from 'components/TrapEditor'
 import RectangleBuilder from 'objects/Rectangle'
 import Vector from 'objects/Vector'
 import Point from 'objects/Point'
@@ -17,6 +18,9 @@ import User from 'objects/User'
 import TrapSystem from 'objects/TrapSystem'
 import CheckboxList from 'core.ui/CheckboxList'
 import ColorPicker from 'core.ui/ColorPicker'
+import ButtonWithIcon from 'core.ui/ButtonWithIcon'
+import ListEditor from 'core.ui/ListEditor'
+
 import { loadMap } from 'utils/maps'
 
 import styles from './MapEditor.css'
@@ -24,6 +28,24 @@ import styles from './MapEditor.css'
 export const WIDTH = 1000
 export const HEIGHT = 800
 
+const toolsConfig = {
+  rectangle: {
+    ids: ['isMovable', 'color', 'hasCollision', 'kills', 'path', 'velocity'],
+    labels: ['Movable', 'Color', 'Collision', 'Kills', 'Path', 'Velocity']
+  },
+  spawn: {
+    ids: ['isMovable', 'color', 'path', 'velocity'],
+    labels: ['Movable', 'Color', 'Path', 'Velocity']
+  },
+  checkpoint: {
+    ids: ['isMovable', 'color', 'path', 'velocity'],
+    labels: ['Movable', 'Color', 'Path', 'Velocity']
+  },
+  trap: {
+    ids: ['isMovable', 'color', 'kills', 'path', 'velocity'],
+    labels: ['Movable', 'Color', 'Kills', 'Path', 'Velocity']
+  }
+}
 class MapEditor extends React.Component {
   constructor(props) {
     super(props)
@@ -37,7 +59,8 @@ class MapEditor extends React.Component {
         checkpoints: []
       },
       tool: 'rectangle',
-      toolOptions: { rectangle: {}, spawn: {}, checkpoint: {} },
+      toolOptions: { rectangle: {}, spawn: {}, checkpoint: {}, trap: {} },
+      // selection: { category: '', element: null },
       size: 40,
       color: new Color(),
       path: [],
@@ -62,7 +85,7 @@ class MapEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const stateKeys = ['tool', 'testMode', 'message']
+    const stateKeys = ['currentWorld', 'tool', 'testMode', 'message']
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
       false
@@ -79,12 +102,38 @@ class MapEditor extends React.Component {
     }
   }
 
+  addItem = curry((category, item) => {
+    const { currentWorld } = this.state
+    this.setState({
+      currentWorld: {
+        ...currentWorld,
+        [category]: [...currentWorld[category], item]
+      }
+    })
+  })
+
+  deleteItem = curry((category, index) => {
+    const { currentWorld } = this.state
+    this.setState({
+      currentWorld: {
+        ...currentWorld,
+        [category]: [
+          ...currentWorld[category].slice(0, index),
+          ...currentWorld[category].slice(index + 1)
+        ]
+      }
+    })
+  })
+
   makeJson() {
     const { currentWorld } = this.state
     const json = JSON.stringify(
       Object.keys(currentWorld).reduce((acc, key) => {
         if (isArray(currentWorld[key])) {
-          return { ...acc, [key]: currentWorld[key].map(extractRectangleData) }
+          return {
+            ...acc,
+            [key]: currentWorld[key].map(extractRectangleData)
+          }
         } else {
           return { ...acc, [key]: extractRectangleData(currentWorld[key]) }
         }
@@ -113,14 +162,14 @@ class MapEditor extends React.Component {
   mouseUp = event => {
     event.stopPropagation()
     const {
+      currentWorld,
       size,
       tool,
       toolOptions,
-      currentWorld,
       gridPosition,
       shapeBeingDrawn
     } = this.state
-    if(shapeBeingDrawn) {
+    if (shapeBeingDrawn) {
       const options = {
         ...computeRectangle(shapeBeingDrawn, gridPosition, size),
         ...toolOptions[tool]
@@ -134,18 +183,17 @@ class MapEditor extends React.Component {
             : 'walls'
           : tool === 'checkpoint'
           ? 'checkpoints'
+          : tool === 'trap'
+          ? 'traps'
           : tool
+      currentWorld[category] =
+        tool === 'spawn'
+          ? new RectangleBuilder().fromObject(options).build()
+          : [
+              ...currentWorld[category],
+              new RectangleBuilder().fromObject(options).build()
+            ]
       this.setState({
-        currentWorld: {
-          ...currentWorld,
-          [category]:
-            tool === 'spawn'
-              ? new RectangleBuilder().fromObject(options).build()
-              : [
-                  ...currentWorld[category],
-                  new RectangleBuilder().fromObject(options).build()
-                ]
-        },
         shapeBeingDrawn: null
       })
     }
@@ -173,8 +221,8 @@ class MapEditor extends React.Component {
     }
   }
 
-  handleToolChange = event => {
-    this.setState({ tool: event.target.value })
+  handleToolChange = value => {
+    this.setState({ tool: value })
   }
 
   handleColorChange = color => {
@@ -192,6 +240,12 @@ class MapEditor extends React.Component {
       this.setState({ color: newColor })
     }
   }
+
+  // handleSelection = selection => {
+  //   this.setState({
+  //     selection: { element: selection, category: this.state.tool }
+  //   })
+  // }
 
   toogleTestMode = () => {
     if (this.state.currentWorld.spawn) {
@@ -215,11 +269,13 @@ class MapEditor extends React.Component {
 
   draw = () => {
     const {
-      currentWorld: { spawn, walls, movableWalls, traps, checkpoints },
-      size,
-      gridPosition,
-      shapeBeingDrawn
-    } = this.state
+      spawn,
+      walls,
+      movableWalls,
+      traps,
+      checkpoints
+    } = this.state.currentWorld
+    const { size, gridPosition, shapeBeingDrawn } = this.state
     this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
@@ -266,67 +322,72 @@ class MapEditor extends React.Component {
       toolOptions,
       testMode,
       message,
-      color
+      color,
+      selection
     } = this.state
     return (
-      <div id={styles.mainContainer}>
+      <div id={styles.editorMainContainer}>
         <div id={styles.leftBar}>
-          <div id={styles.toolBox}>
-            <div className={styles.leftBarGroup}>
+          <div id={styles.toolBar}>
+            <div className={styles.toolbarSection}>
               <span className={styles.title}>Tool</span>
-              <button
-                value="rectangle"
-                onClick={this.handleToolChange}
-                className={styles.button}
-              >
-                Rectangle
-              </button>
-              <button
-                value="spawn"
-                onClick={this.handleToolChange}
-                className={styles.button}
-              >
-                Spawn
-              </button>
-              <button
-                value="checkpoint"
-                onClick={this.handleToolChange}
-                className={styles.button}
-              >
-                Checkpoint
-              </button>
+              <div id={styles.toolButtonsContainer}>
+                <ButtonWithIcon
+                  value="rectangle"
+                  icon="Crop"
+                  tooltip="Rectangle"
+                  selected={tool === 'rectangle'}
+                  onClick={this.handleToolChange}
+                />
+                <ButtonWithIcon
+                  value="spawn"
+                  icon="Target"
+                  tooltip="Spawn"
+                  selected={tool === 'spawn'}
+                  onClick={this.handleToolChange}
+                />
+                <ButtonWithIcon
+                  value="checkpoint"
+                  icon="UserCheck"
+                  tooltip="Checkpoint"
+                  selected={tool === 'checkpoint'}
+                  onClick={this.handleToolChange}
+                />
+                <ButtonWithIcon
+                  value="trap"
+                  icon="XSquare"
+                  tooltip="Trap"
+                  selected={tool === 'trap'}
+                  onClick={this.handleToolChange}
+                />
+              </div>
             </div>
-            <CheckboxList
-              title="Options"
-              ids={[
-                'isMovable',
-                'color',
-                'hasCollision',
-                'kills',
-                'path',
-                'velocity'
-              ]}
-              labels={[
-                'Movable',
-                'Color',
-                'Collision',
-                'Kills',
-                'Path',
-                'Velocity'
-              ]}
-              values={toolOptions[tool]}
-              onChange={this.handleCheckboxChange}
+            <ColorPicker
+              value={color.hexString}
+              noTextField
+              onChangeComplete={this.handleColorChange}
             />
+            {tool === 'trap' ? (
+              <TrapEditor
+                list={currentWorld.traps}
+                objectClass={TrapSystem}
+                addItem={this.addItem('traps')}
+                deleteItem={this.deleteItem('traps')}
+              />
+            ) : (
+              <CheckboxList
+                title="Options"
+                ids={toolsConfig[tool].ids}
+                labels={toolsConfig[tool].labels}
+                values={toolOptions[tool]}
+                onChange={this.handleCheckboxChange}
+              />
+            )}
             <button onClick={this.toogleTestMode}>
               {testMode ? 'Back to Editor' : 'Test map'}
             </button>
           </div>
           <div className={styles.message}>{message}</div>
-          <ColorPicker
-            value={color.hexString}
-            noTextField
-            onChangeComplete={this.handleColorChange}
-          />
         </div>
         {testMode ? (
           <Game world={currentWorld} noNetwork />

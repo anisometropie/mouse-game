@@ -1,0 +1,52 @@
+#mainContainer {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+.section {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionLabel {
+  color: darkblue;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cycleLengthInput {
+  width: 90px;
+}
+
+/* group display  */
+
+.groupContainer {
+  margin: 5px 0;
+}
+
+.groupSectionLabel {
+  color: darkblue;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.timingInputContainer {
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.timingInput {
+  width: 40px;
+}
+
+.rectangleListContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
