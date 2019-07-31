@@ -101,6 +101,18 @@ class TrapSystem {
     return clone
   }
 
+  editTiming(groupIndex, leftBound, rightBound) {
+    this.groups[groupIndex].timing = new Interval(
+      `[${leftBound}, ${rightBound}[`
+    )
+  }
+
+  editedTiming(groupIndex, leftBound, rightBound) {
+    const clone = this.clone()
+    clone.editTiming(groupIndex, leftBound, rightBound)
+    return clone
+  }
+
   display(ctx) {
     for (let g of this.groups) {
       ctx.fillStyle = g.on ? 'red' : 'lime'
