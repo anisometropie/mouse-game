@@ -113,6 +113,26 @@ class TrapSystem {
     return clone
   }
 
+  addRectangle(groupIndex, rectangle) {
+    this.groups[groupIndex].traps.push(rectangle)
+  }
+
+  addedRectangle(groupIndex, rectangle) {
+    const clone = this.clone()
+    clone.addRectangle(groupIndex, rectangle)
+    return clone
+  }
+
+  deleteRectangle(groupIndex, rectangleIndex) {
+    this.groups[groupIndex].traps.splice(rectangleIndex, 1)
+  }
+
+  deletedRectangle(groupIndex, rectangleIndex) {
+    const clone = this.clone()
+    clone.deleteRectangle(groupIndex, rectangleIndex)
+    return clone
+  }
+
   display(ctx) {
     for (let g of this.groups) {
       ctx.fillStyle = g.on ? 'red' : 'lime'
