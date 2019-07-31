@@ -39,12 +39,15 @@ class TrapEditor extends React.Component {
   }
 
   deleteGroup = () => {
+    const { list, updateItem } = this.props
     const { trapSystemSelection, groupSelection } = this.state
-    const trapIndex = list.indexOf(trapSystemSelection)
-    const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
-    const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
-    updateItem(trapIndex, updatedTrapSystem)
-    this.setState({ trapSystemSelection: updatedTrapSystem })
+    if (trapSystemSelection && groupSelection) {
+      const trapIndex = list.indexOf(trapSystemSelection)
+      const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
+      const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
+      updateItem(trapIndex, updatedTrapSystem)
+      this.setState({ trapSystemSelection: updatedTrapSystem })
+    }
   }
 
   handleTrapSelection = selection => {

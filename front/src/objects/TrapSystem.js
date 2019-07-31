@@ -91,13 +91,13 @@ class TrapSystem {
 
   addedGroup() {
     const clone = this.clone()
-    clone.groups.push({ traps: [], timing: new Interval('[0, 0[') })
+    clone.addGroup()
     return clone
   }
 
   deletedGroup(index) {
     const clone = this.clone()
-    clone.groups.splice(index, 1)
+    clone.deleteGroup(index)
     return clone
   }
 

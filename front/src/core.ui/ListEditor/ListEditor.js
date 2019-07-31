@@ -11,7 +11,14 @@ class ListEditor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selection: null
+      selection: props.selection
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selection } = this.props
+    if (selection !== prevProps.selection) {
+      this.setState({ selection })
     }
   }
 
@@ -26,7 +33,6 @@ class ListEditor extends React.Component {
   handleAdd = () => {
     const { list, addItem } = this.props
     addItem()
-    this.setState({ selection: last(list) })
   }
 
   handleRemove = () => {
