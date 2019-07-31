@@ -38,6 +38,16 @@ class TrapSystem {
     }
   }
 
+  clone() {
+    const prototype = Object.getPrototypeOf(this)
+    const obj = Object.create(prototype)
+    for (const key of Reflect.ownKeys(this)) {
+      const descriptors = Reflect.getOwnPropertyDescriptor(this, key)
+      Reflect.defineProperty(obj, key, descriptors)
+    }
+    return obj
+  }
+
   /**
    * defines where the zero should be
    */
@@ -77,6 +87,18 @@ class TrapSystem {
 
   deleteGroup(index) {
     this.groups.splice(index, 1)
+  }
+
+  addedGroup() {
+    const clone = this.clone()
+    clone.groups.push({ traps: [], timing: new Interval('[0, 0[') })
+    return clone
+  }
+
+  deletedGroup(index) {
+    const clone = this.clone()
+    clone.groups.splice(index, 1)
+    return clone
   }
 
   display(ctx) {

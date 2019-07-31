@@ -3,12 +3,17 @@ import { shallow, mount, render } from 'enzyme'
 
 import MapEditor from '../MapEditor'
 import Color from 'effects/Color'
+import RectangleBuilder from 'objects/Rectangle'
+
 // const canvas = require.requireActual('utils/canvas')
 // canvas.getMousePos = jest.fn((c, coords) => {
 //   return coords
 // })
 jest.mock('engine/physics')
 jest.mock('components/Game')
+const fakeEvent = {
+  stopPropagation: () => {}
+}
 
 describe('map editor component', () => {
   describe('checkboxes', () => {
@@ -42,7 +47,7 @@ describe('map editor component', () => {
         shapeBeingDrawn: { x: 0, y: 0 },
         gridPosition: { x: 3, y: 3 }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.walls[0]
       expect(rectangle.constructor.name).toEqual('Rectangle')
@@ -66,7 +71,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         toolOptions: { rectangle: { isMovable: true } }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.movableWalls[0]
       expect(rectangle.constructor.name).toEqual('MovableRectangle')
@@ -91,7 +96,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         toolOptions: { rectangle: { color } }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.walls[0]
       expect(rectangle.constructor.name).toEqual('Rectangle')
@@ -105,7 +110,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         toolOptions: { rectangle: { hasCollision: true } }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.walls[0]
       expect(rectangle.constructor.name).toEqual('Rectangle')
@@ -119,7 +124,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         toolOptions: { rectangle: { kills: true } }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.traps[0]
       expect(rectangle.constructor.name).toEqual('Rectangle')
@@ -135,7 +140,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         toolOptions: { rectangle: { path, velocity, isMovable: true } }
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.movableWalls[0]
       expect(rectangle.constructor.name).toEqual('MovableRectangle')
@@ -152,7 +157,7 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         tool: 'spawn'
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.spawn
       expect(rectangle.constructor.name).toEqual('Rectangle')
@@ -167,10 +172,193 @@ describe('map editor component', () => {
         gridPosition: { x: 3, y: 3 },
         tool: 'checkpoint'
       })
-      instance.mouseUp()
+      instance.mouseUp(fakeEvent)
       const state = wrapper.state()
       const rectangle = state.currentWorld.checkpoints[0]
       expect(rectangle.constructor.name).toEqual('Rectangle')
+    })
+  })
+
+  describe('adding items', () => {
+    it('should be able to create element in non array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const spawn = new RectangleBuilder(0, 0, 1, 1).build()
+      instance.addItem('spawn', spawn)
+      const state = wrapper.state()
+      expect(state.currentWorld.spawn).toEqual(spawn)
+    })
+    it('should be able to create element in array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const newWall = new RectangleBuilder(0, 0, 44, 44).build()
+      instance.addItem('walls', newWall)
+      const state = wrapper.state()
+      expect(state.currentWorld.walls[0]).toEqual(newWall)
+    })
+    it('should be able to add several elements in array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const newWall = new RectangleBuilder(0, 0, 1, 1).build()
+      const newWall2 = new RectangleBuilder(0, 0, 2, 2).build()
+      const newWall3 = new RectangleBuilder(0, 0, 3, 4).build()
+      instance.addItem('walls', newWall)
+      instance.addItem('walls', newWall2)
+      instance.addItem('walls', newWall3)
+      const state = wrapper.state()
+      expect(state.currentWorld.walls[0]).toEqual(newWall)
+      expect(state.currentWorld.walls[1]).toEqual(newWall2)
+      expect(state.currentWorld.walls[2]).toEqual(newWall3)
+    })
+  })
+
+  describe('updating items', () => {
+    it('should be able to update element in non array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const oldSpawn = new RectangleBuilder(0, 0, 1, 1).build()
+      const newSpawn = new RectangleBuilder(0, 0, 2, 2).build()
+      wrapper.setState({
+        currentWorld: {
+          spawn: oldSpawn,
+          walls: [],
+          movableWalls: [],
+          traps: [],
+          checkpoints: []
+        }
+      })
+      instance.updateItem('spawn', null, newSpawn)
+      const state = wrapper.state()
+      expect(state.currentWorld).toMatchObject({
+        spawn: newSpawn,
+        walls: [],
+        movableWalls: [],
+        traps: [],
+        checkpoints: []
+      })
+    })
+    it('should be able to update element in array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const newWall = new RectangleBuilder(500, 500, 1, 1).build()
+      wrapper.setState({
+        currentWorld: {
+          spawn: null,
+          walls: [
+            new RectangleBuilder(0, 0, 1, 1).build(),
+            new RectangleBuilder(1, 0, 1, 1).build(),
+            new RectangleBuilder(2, 0, 1, 1).build(),
+            new RectangleBuilder(3, 0, 1, 1).build()
+          ],
+          movableWalls: [],
+          traps: [],
+          checkpoints: []
+        }
+      })
+      instance.updateItem('walls', 2, newWall)
+      const state = wrapper.state()
+      expect(state.currentWorld).toMatchObject({
+        spawn: null,
+        walls: [
+          new RectangleBuilder(0, 0, 1, 1).build(),
+          new RectangleBuilder(1, 0, 1, 1).build(),
+          newWall,
+          new RectangleBuilder(3, 0, 1, 1).build()
+        ],
+        movableWalls: [],
+        traps: [],
+        checkpoints: []
+      })
+    })
+  })
+
+  describe('deleting items', () => {
+    it('should be able to delete element in non array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const spawn = new RectangleBuilder(0, 0, 1, 1).build()
+      wrapper.setState({
+        currentWorld: {
+          spawn: spawn,
+          walls: [],
+          movableWalls: [],
+          traps: [],
+          checkpoints: []
+        }
+      })
+      instance.deleteItem('spawn', null)
+      const state = wrapper.state()
+      expect(state.currentWorld).toMatchObject({
+        spawn: null,
+        walls: [],
+        movableWalls: [],
+        traps: [],
+        checkpoints: []
+      })
+    })
+    it('should be able to delete element in array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const newWall = new RectangleBuilder(500, 500, 1, 1).build()
+      wrapper.setState({
+        currentWorld: {
+          spawn: null,
+          walls: [
+            new RectangleBuilder(0, 0, 1, 1).build(),
+            new RectangleBuilder(1, 0, 1, 1).build(),
+            new RectangleBuilder(2, 0, 1, 1).build(),
+            new RectangleBuilder(3, 0, 1, 1).build()
+          ],
+          movableWalls: [],
+          traps: [],
+          checkpoints: []
+        }
+      })
+      instance.deleteItem('walls', 2, newWall)
+      const state = wrapper.state()
+      expect(state.currentWorld).toMatchObject({
+        spawn: null,
+        walls: [
+          new RectangleBuilder(0, 0, 1, 1).build(),
+          new RectangleBuilder(1, 0, 1, 1).build(),
+          new RectangleBuilder(3, 0, 1, 1).build()
+        ],
+        movableWalls: [],
+        traps: [],
+        checkpoints: []
+      })
+    })
+    it('should be able to delete several elements in array category', () => {
+      const wrapper = mount(<MapEditor />)
+      const instance = wrapper.instance()
+      const newWall = new RectangleBuilder(500, 500, 1, 1).build()
+      wrapper.setState({
+        currentWorld: {
+          spawn: null,
+          walls: [
+            new RectangleBuilder(0, 0, 1, 1).build(),
+            new RectangleBuilder(1, 0, 1, 1).build(),
+            new RectangleBuilder(2, 0, 1, 1).build(),
+            new RectangleBuilder(3, 0, 1, 1).build()
+          ],
+          movableWalls: [],
+          traps: [],
+          checkpoints: []
+        }
+      })
+      instance.deleteItem('walls', 0, newWall)
+      instance.deleteItem('walls', 1, newWall)
+      const state = wrapper.state()
+      expect(state.currentWorld).toMatchObject({
+        spawn: null,
+        walls: [
+          new RectangleBuilder(1, 0, 1, 1).build(),
+          new RectangleBuilder(3, 0, 1, 1).build()
+        ],
+        movableWalls: [],
+        traps: [],
+        checkpoints: []
+      })
     })
   })
 })

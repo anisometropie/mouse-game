@@ -104,23 +104,46 @@ class MapEditor extends React.Component {
 
   addItem = curry((category, item) => {
     const { currentWorld } = this.state
+    const updatedCategory = Array.isArray(currentWorld[category])
+      ? [...currentWorld[category], item]
+      : item
     this.setState({
       currentWorld: {
         ...currentWorld,
-        [category]: [...currentWorld[category], item]
+        [category]: updatedCategory
+      }
+    })
+  })
+
+  updateItem = curry((category, index, newItem) => {
+    const { currentWorld } = this.state
+    const updatedCategory = Array.isArray(currentWorld[category])
+      ? [
+          ...currentWorld[category].slice(0, index),
+          newItem,
+          ...currentWorld[category].slice(index + 1)
+        ]
+      : newItem
+    this.setState({
+      currentWorld: {
+        ...currentWorld,
+        [category]: updatedCategory
       }
     })
   })
 
   deleteItem = curry((category, index) => {
     const { currentWorld } = this.state
-    this.setState({
-      currentWorld: {
-        ...currentWorld,
-        [category]: [
+    const updatedCategory = Array.isArray(currentWorld[category])
+      ? [
           ...currentWorld[category].slice(0, index),
           ...currentWorld[category].slice(index + 1)
         ]
+      : null
+    this.setState({
+      currentWorld: {
+        ...currentWorld,
+        [category]: updatedCategory
       }
     })
   })
@@ -372,6 +395,7 @@ class MapEditor extends React.Component {
                 list={currentWorld.traps}
                 objectClass={TrapSystem}
                 addItem={this.addItem('traps')}
+                updateItem={this.updateItem('traps')}
                 deleteItem={this.deleteItem('traps')}
               />
             ) : (

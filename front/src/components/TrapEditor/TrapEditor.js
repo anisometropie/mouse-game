@@ -14,7 +14,7 @@ class TrapEditor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      trapSelection: null,
+      trapSystemSelection: null,
       groupSelection: null
     }
   }
@@ -23,28 +23,33 @@ class TrapEditor extends React.Component {
     const { list } = this.props
     if (
       prevProps.list !== list &&
-      !this.props.list.includes(this.state.trapSelection)
+      !this.props.list.includes(this.state.trapSystemSelection)
     ) {
-      this.setState({ trapSelection: null, groupSelection: null })
+      this.setState({ trapSystemSelection: null, groupSelection: null })
     }
   }
 
   addGroup = () => {
-    const { trapSelection } = this.state
-    trapSelection.addGroup()
-    this.setState({ groupSelection: last(trapSelection.groups) })
+    const { list, updateItem } = this.props
+    const { trapSystemSelection } = this.state
+    const trapIndex = list.indexOf(trapSystemSelection)
+    const updatedTrapSystem = trapSystemSelection.addedGroup()
+    updateItem(trapIndex, updatedTrapSystem)
+    this.setState({ trapSystemSelection: updatedTrapSystem })
   }
 
   deleteGroup = () => {
-    const { trapSelection, groupSelection } = this.state
-    const index = trapSelection.groups.indexOf(groupSelection)
-    trapSelection.deleteGroup(index)
-    this.setState({ groupSelection: null })
+    const { trapSystemSelection, groupSelection } = this.state
+    const trapIndex = list.indexOf(trapSystemSelection)
+    const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
+    const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
+    updateItem(trapIndex, updatedTrapSystem)
+    this.setState({ trapSystemSelection: updatedTrapSystem })
   }
 
   handleTrapSelection = selection => {
-    if (selection !== this.state.trapSelection) {
-      this.setState({ trapSelection: selection, groupSelection: null })
+    if (selection !== this.state.trapSystemSelection) {
+      this.setState({ trapSystemSelection: selection, groupSelection: null })
     }
   }
 
@@ -55,7 +60,7 @@ class TrapEditor extends React.Component {
   }
 
   render() {
-    const { trapSelection, groupSelection } = this.state
+    const { trapSystemSelection, groupSelection } = this.state
     const { list, addItem, deleteItem } = this.props
     return (
       <div id={styles.mainContainer}>
@@ -67,9 +72,10 @@ class TrapEditor extends React.Component {
             addItem(new TrapSystem())
           }}
           deleteItem={deleteItem}
+          selection={trapSystemSelection}
           onSelection={this.handleTrapSelection}
         />
-        {trapSelection && (
+        {trapSystemSelection && (
           <div>
             <div className={styles.section}>
               <label className={styles.sectionLabel} htmlFor="cycleLengthInput">
@@ -89,7 +95,7 @@ class TrapEditor extends React.Component {
               <ListEditor
                 row
                 itemName="Group"
-                list={trapSelection.groups}
+                list={trapSystemSelection.groups}
                 addItem={this.addGroup}
                 deleteItem={this.deleteGroup}
                 onSelection={this.handleGroupSelection}
