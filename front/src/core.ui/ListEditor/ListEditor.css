@@ -1,0 +1,46 @@
+#mainContainer {
+  border: 1px lightgrey solid;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.list {
+  padding: 0;
+  margin: 3px 0;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.listItem {
+  border: 1px lightgrey solid;
+  border-radius: 2px;
+  padding: 0.5px 0;
+  margin: 0.5px 0;
+  font-size: 10px;
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.button {
+  border: 1px black solid;
+  border-radius: 1px;
+  margin: 1px;
+  background: none;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:focus {
+  outline: 0;
+}
