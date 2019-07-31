@@ -29,25 +29,36 @@ class TrapEditor extends React.Component {
     }
   }
 
-  addGroup = () => {
+  updateTrapSystem = updatedTrapSystem => {
     const { list, updateItem } = this.props
-    const { trapSystemSelection } = this.state
-    const trapIndex = list.indexOf(trapSystemSelection)
-    const updatedTrapSystem = trapSystemSelection.addedGroup()
+    const trapIndex = list.indexOf(this.state.trapSystemSelection)
     updateItem(trapIndex, updatedTrapSystem)
     this.setState({ trapSystemSelection: updatedTrapSystem })
   }
 
+  addGroup = () => {
+    const updatedTrapSystem = this.state.trapSystemSelection.addedGroup()
+    this.updateTrapSystem(updatedTrapSystem)
+  }
+
   deleteGroup = () => {
-    const { list, updateItem } = this.props
     const { trapSystemSelection, groupSelection } = this.state
     if (trapSystemSelection && groupSelection) {
-      const trapIndex = list.indexOf(trapSystemSelection)
       const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
       const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
-      updateItem(trapIndex, updatedTrapSystem)
-      this.setState({ trapSystemSelection: updatedTrapSystem })
+      this.updateTrapSystem(updatedTrapSystem)
     }
+  }
+
+  editGroupTiming = (leftBound, rightBound) => {
+    const { trapSystemSelection, groupSelection } = this.state
+    const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
+    const updatedTrapSystem = trapSystemSelection.editedTiming(
+      groupIndex,
+      leftBound,
+      rightBound
+    )
+    this.updateTrapSystem(updatedTrapSystem)
   }
 
   handleTrapSelection = selection => {
@@ -82,7 +93,7 @@ class TrapEditor extends React.Component {
           <div>
             <div className={styles.section}>
               <label className={styles.sectionLabel} htmlFor="cycleLengthInput">
-                Cycle length (ms)
+                Cycle (ms)
               </label>
               <input
                 className={styles.cycleLengthInput}
@@ -103,7 +114,12 @@ class TrapEditor extends React.Component {
                 deleteItem={this.deleteGroup}
                 onSelection={this.handleGroupSelection}
               />
-              {groupSelection && <GroupDisplay group={groupSelection} />}
+              {groupSelection && (
+                <GroupDisplay
+                  editGroupTiming={this.editGroupTiming}
+                  group={groupSelection}
+                />
+              )}
             </div>
           </div>
         )}

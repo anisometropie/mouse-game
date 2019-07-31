@@ -82,7 +82,7 @@ class TrapSystem {
   }
 
   addGroup() {
-    this.groups.push({ traps: [], timing: new Interval('[0, 0[') })
+    this.groups.push({ traps: [], timing: new Interval('[0, 100[') })
   }
 
   deleteGroup(index) {
