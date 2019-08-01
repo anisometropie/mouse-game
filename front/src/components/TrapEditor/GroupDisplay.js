@@ -1,5 +1,7 @@
 import React from 'react'
 import { get } from 'lodash'
+
+import InputWithControls from 'core.ui/InputWithControls'
 import styles from './TrapEditor.css'
 
 class GroupDisplay extends React.Component {
@@ -37,7 +39,7 @@ class GroupDisplay extends React.Component {
   }
 
   render() {
-    const { group } = this.props
+    const { group, cycleLength } = this.props
     const { leftBound, rightBound } = this.state
     const rectangles = group.traps.map((rectangle, i) => (
       <li
@@ -50,33 +52,27 @@ class GroupDisplay extends React.Component {
         <div className={styles.timingContainer}>
           <label className={styles.groupSectionLabel}>Timing (ms)</label>
           <div className={styles.timingInputContainer}>
-            <input
+            <InputWithControls
               id="leftBound"
               value={leftBound}
               onChange={this.handleBoundChange}
-              onKeyPress={event => {
-                if (event.key === 'Enter') {
-                  this.handleSubmit()
-                }
-              }}
-              onBlur={this.handleSubmit}
+              onChangeComplete={this.handleSubmit}
               className={styles.timingInput}
               type="number"
-              min="0"
+              min={0}
+              max={cycleLength}
+              step={100}
             />
-            <input
+            <InputWithControls
               id="rightBound"
               value={rightBound}
               onChange={this.handleBoundChange}
-              onKeyPress={event => {
-                if (event.key === 'Enter') {
-                  this.handleSubmit()
-                }
-              }}
-              onBlur={this.handleSubmit}
+              onChangeComplete={this.handleSubmit}
               className={styles.timingInput}
               type="number"
-              min="0"
+              min={0}
+              max={cycleLength}
+              step={100}
             />
           </div>
         </div>

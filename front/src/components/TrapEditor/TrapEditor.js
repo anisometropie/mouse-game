@@ -4,6 +4,7 @@ import { last } from 'lodash'
 import Interval from 'objects/Interval'
 import RectangleBuilder from 'objects/Rectangle'
 import TrapSystem from 'objects/TrapSystem'
+import InputWithControls from 'core.ui/InputWithControls'
 
 import ListEditor from 'core.ui/ListEditor'
 import GroupDisplay from './GroupDisplay'
@@ -48,6 +49,13 @@ class TrapEditor extends React.Component {
       const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
       this.updateTrapSystem(updatedTrapSystem)
     }
+  }
+
+  editCycleLength = cycleLength => {
+    const updatedTrapSystem = this.state.trapSystemSelection.editedCycleLength(
+      cycleLength
+    )
+    this.updateTrapSystem(updatedTrapSystem)
   }
 
   editGroupTiming = (leftBound, rightBound) => {
@@ -95,11 +103,14 @@ class TrapEditor extends React.Component {
               <label className={styles.sectionLabel} htmlFor="cycleLengthInput">
                 Cycle (ms)
               </label>
-              <input
-                className={styles.cycleLengthInput}
+              <InputWithControls
                 id="cycleLengthInput"
+                value={trapSystemSelection.cycleLength}
+                className={styles.cycleLengthInput}
+                onChangeComplete={this.editCycleLength}
                 type="number"
                 min="0"
+                step="100"
               />
             </div>
             <div className={styles.section}>
@@ -118,6 +129,7 @@ class TrapEditor extends React.Component {
                 <GroupDisplay
                   editGroupTiming={this.editGroupTiming}
                   group={groupSelection}
+                  cycleLength={trapSystemSelection.cycleLength}
                 />
               )}
             </div>

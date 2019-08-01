@@ -101,6 +101,16 @@ class TrapSystem {
     return clone
   }
 
+  editCycleLength(cycleLength) {
+    this.cycleLength = cycleLength
+  }
+
+  editedCycleLength(cycleLength) {
+    const clone = this.clone()
+    clone.editCycleLength(cycleLength)
+    return clone
+  }
+
   editTiming(groupIndex, leftBound, rightBound) {
     this.groups[groupIndex].timing = new Interval(
       `[${leftBound}, ${rightBound}[`
