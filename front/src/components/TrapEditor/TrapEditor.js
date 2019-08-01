@@ -49,6 +49,7 @@ class TrapEditor extends React.Component {
       const updatedTrapSystem = trapSystemSelection.deletedGroup(groupIndex)
       this.updateTrapSystem(updatedTrapSystem)
     }
+    this.setState({ groupSelection: null })
   }
 
   editCycleLength = cycleLength => {
