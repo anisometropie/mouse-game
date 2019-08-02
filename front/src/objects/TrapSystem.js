@@ -45,6 +45,7 @@ class TrapSystem {
       const descriptors = Reflect.getOwnPropertyDescriptor(this, key)
       Reflect.defineProperty(obj, key, descriptors)
     }
+    obj.startLoop()
     return obj
   }
 
@@ -59,6 +60,10 @@ class TrapSystem {
   setTimeShift() {
     this.currentTime = 0
     this.timeShift = (new Date() - this.timestamp) % this.cycleLength
+    this.startLoop()
+  }
+
+  startLoop() {
     clearInterval(this.loop)
     this.loop = setInterval(this.toggleTraps.bind(this), TRAP_TIMING_STEP)
   }
@@ -102,7 +107,7 @@ class TrapSystem {
   }
 
   editCycleLength(cycleLength) {
-    this.cycleLength = cycleLength
+    this.cycleLength = +cycleLength
   }
 
   editedCycleLength(cycleLength) {
