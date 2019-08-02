@@ -60,6 +60,10 @@ class MapEditor extends React.Component {
       },
       tool: 'rectangle',
       toolOptions: { rectangle: {}, spawn: {}, checkpoint: {}, trap: {} },
+      trapEditor: {
+        trapSystemSelection: null,
+        groupSelection: null
+      },
       // selection: { category: '', element: null },
       size: 40,
       color: new Color(),
@@ -85,7 +89,13 @@ class MapEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const stateKeys = ['currentWorld', 'tool', 'testMode', 'message']
+    const stateKeys = [
+      'currentWorld',
+      'tool',
+      'testMode',
+      'message',
+      'trapEditor'
+    ]
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
       false
@@ -270,6 +280,20 @@ class MapEditor extends React.Component {
   //   })
   // }
 
+  setTrapSelection = (trap = null, group = null) => {
+    const { trapEditor } = this.state
+    const { trapSystemSelection, groupSelection } = trapEditor
+    if (trap && trap !== trapSystemSelection) {
+      this.setState({
+        trapEditor: { trapSystemSelection: trap, groupSelection: group }
+      })
+    } else if (group !== groupSelection) {
+      this.setState({
+        trapEditor: { ...trapEditor, groupSelection: group }
+      })
+    }
+  }
+
   toogleTestMode = () => {
     if (this.state.currentWorld.spawn) {
       this.setState({
@@ -346,7 +370,8 @@ class MapEditor extends React.Component {
       testMode,
       message,
       color,
-      selection
+      selection,
+      trapEditor
     } = this.state
     return (
       <div id={styles.editorMainContainer}>
@@ -394,9 +419,12 @@ class MapEditor extends React.Component {
               <TrapEditor
                 list={currentWorld.traps}
                 objectClass={TrapSystem}
-                addItem={this.addItem('traps')}
-                updateItem={this.updateItem('traps')}
-                deleteItem={this.deleteItem('traps')}
+                addTrap={this.addItem('traps')}
+                updateTrap={this.updateItem('traps')}
+                deleteTrap={this.deleteItem('traps')}
+                trapSystemSelection={trapEditor.trapSystemSelection}
+                groupSelection={trapEditor.groupSelection}
+                setTrapSelection={this.setTrapSelection}
               />
             ) : (
               <CheckboxList

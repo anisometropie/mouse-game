@@ -4,6 +4,7 @@ import { shallow, mount, render } from 'enzyme'
 import MapEditor from '../MapEditor'
 import Color from 'effects/Color'
 import RectangleBuilder from 'objects/Rectangle'
+import TrapSystem from 'objects/TrapSystem'
 
 // const canvas = require.requireActual('utils/canvas')
 // canvas.getMousePos = jest.fn((c, coords) => {
@@ -358,6 +359,31 @@ describe('map editor component', () => {
         movableWalls: [],
         traps: [],
         checkpoints: []
+      })
+    })
+  })
+
+  describe('trap selector', () => {
+    it('should be able to select trap in list', () => {
+      const wrapper = mount(<MapEditor />)
+      const trap1 = new TrapSystem()
+      const trap2 = new TrapSystem()
+      const instance = wrapper.instance()
+      wrapper.setState({
+        currentWorld: {
+          spawn: null,
+          walls: [],
+          movableWalls: [],
+          traps: [trap1, trap2],
+          checkpoints: []
+        },
+        trapEditor: {}
+      })
+      instance.setTrapSelection(trap1)
+      const state = wrapper.state()
+      expect(state.trapEditor).toMatchObject({
+        trapSystemSelection: trap1,
+        groupSelection: null
       })
     })
   })

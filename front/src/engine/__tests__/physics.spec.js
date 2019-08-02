@@ -9,8 +9,6 @@ import {
   stepCollisionResolve
 } from '../physics'
 
-jest.mock('sketch')
-
 describe('point in rectangle function', () => {
   it('should return true if point is inside square', () => {
     const rectangle = new Rectangle(100, 100, 100, 100)
