@@ -17,21 +17,18 @@ class TrapEditor extends React.Component {
       list,
       updateTrap,
       trapSystemSelection,
+      groupSelection,
       setTrapSelection
     } = this.props
     const trapIndex = list.indexOf(trapSystemSelection)
+    const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
     updateTrap(trapIndex, updatedTrapSystem)
-    setTrapSelection(updatedTrapSystem, selectedGroup)
+    setTrapSelection(updatedTrapSystem, updatedTrapSystem.groups[groupIndex])
   }
 
   addGroup = () => {
-    const { trapSystemSelection, groupSelection } = this.props
-    const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
     const updatedTrapSystem = this.props.trapSystemSelection.addedGroup()
-    this.updateTrapSystem(
-      updatedTrapSystem,
-      updatedTrapSystem.groups[groupIndex]
-    )
+    this.updateTrapSystem(updatedTrapSystem)
   }
 
   deleteGroup = () => {
@@ -58,10 +55,7 @@ class TrapEditor extends React.Component {
       leftBound,
       rightBound
     )
-    this.updateTrapSystem(
-      updatedTrapSystem,
-      updatedTrapSystem.groups[groupIndex]
-    )
+    this.updateTrapSystem(updatedTrapSystem)
   }
 
   render() {
@@ -82,7 +76,10 @@ class TrapEditor extends React.Component {
           addItem={() => {
             addTrap(new TrapSystem())
           }}
-          deleteItem={deleteTrap}
+          deleteItem={index => {
+            deleteTrap(index)
+            setTrapSelection(null, null)
+          }}
           selection={trapSystemSelection}
           onSelection={setTrapSelection}
         />
@@ -113,7 +110,7 @@ class TrapEditor extends React.Component {
                 addItem={this.addGroup}
                 deleteItem={this.deleteGroup}
                 onSelection={selection => {
-                  setTrapSelection(null, selection)
+                  setTrapSelection(undefined, selection)
                 }}
               />
               {groupSelection && (

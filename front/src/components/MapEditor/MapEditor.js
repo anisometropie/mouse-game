@@ -298,10 +298,15 @@ class MapEditor extends React.Component {
   //   })
   // }
 
-  setTrapSelection = (trap = null, group = null) => {
+  /**
+   * @param {undefined|null|TrapSystem} trap
+     — give undefined to leave it untouched
+     — give null to set it to null
+  */
+  setTrapSelection = (trap, group) => {
     const { trapEditor } = this.state
     const { trapSystemSelection, groupSelection } = trapEditor
-    if (trap && trap !== trapSystemSelection) {
+    if (trap !== undefined && trap !== trapSystemSelection) {
       this.setState({
         trapEditor: { trapSystemSelection: trap, groupSelection: group }
       })
