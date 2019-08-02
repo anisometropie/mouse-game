@@ -219,13 +219,31 @@ class MapEditor extends React.Component {
           : tool === 'trap'
           ? 'traps'
           : tool
-      currentWorld[category] =
-        tool === 'spawn'
-          ? new RectangleBuilder().fromObject(options).build()
-          : [
-              ...currentWorld[category],
-              new RectangleBuilder().fromObject(options).build()
-            ]
+      const newRectangle = new RectangleBuilder().fromObject(options).build()
+      if (tool === 'spawn') {
+        this.updateItem(category, null, newRectangle)
+      } else if (tool === 'trap') {
+        const { trapSystemSelection, groupSelection } = this.state.trapEditor
+        if (trapSystemSelection && groupSelection) {
+          const trapIndex = currentWorld.traps.indexOf(trapSystemSelection)
+          const groupIndex = trapSystemSelection.groups.indexOf(groupSelection)
+          const updatedTrapSystem = trapSystemSelection.addedRectangle(
+            groupIndex,
+            newRectangle
+          )
+          this.updateItem(category, trapIndex, updatedTrapSystem)
+          this.setTrapSelection(
+            updatedTrapSystem,
+            trapSystemSelection.groups[groupIndex]
+          )
+        } else {
+          this.setState({
+            message: 'First select a group to draw a trap rectangle'
+          })
+        }
+      } else {
+        this.addItem(category, newRectangle)
+      }
       this.setState({
         shapeBeingDrawn: null
       })
