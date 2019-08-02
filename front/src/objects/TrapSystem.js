@@ -143,6 +143,10 @@ class TrapSystem {
     return clone
   }
 
+  clearLoop() {
+    clearInterval(this.loop)
+  }
+
   display(ctx) {
     for (let g of this.groups) {
       ctx.fillStyle = g.on ? 'red' : 'lime'

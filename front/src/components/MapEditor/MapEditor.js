@@ -150,6 +150,9 @@ class MapEditor extends React.Component {
           ...currentWorld[category].slice(index + 1)
         ]
       : null
+    if (category === 'traps') {
+      currentWorld[category][index].clearLoop()
+    }
     this.setState({
       currentWorld: {
         ...currentWorld,
