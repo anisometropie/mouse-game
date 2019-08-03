@@ -59,7 +59,13 @@ class MapEditor extends React.Component {
         checkpoints: []
       },
       tool: 'rectangle',
-      toolOptions: { rectangle: {}, spawn: {}, checkpoint: {}, trap: {} },
+      toolOptions: {
+        select: {},
+        rectangle: {},
+        spawn: {},
+        checkpoint: {},
+        trap: {}
+      },
       trapEditor: {
         trapSystemSelection: null,
         groupSelection: null
@@ -191,8 +197,12 @@ class MapEditor extends React.Component {
   }
 
   mouseDown = () => {
-    const { gridPosition } = this.state
-    this.setState({ shapeBeingDrawn: gridPosition })
+    const { tool, gridPosition } = this.state
+    if (tool === 'select') {
+      // TODO
+    } else {
+      this.setState({ shapeBeingDrawn: gridPosition })
+    }
   }
 
   mouseUp = event => {
@@ -348,7 +358,7 @@ class MapEditor extends React.Component {
       traps,
       checkpoints
     } = this.state.currentWorld
-    const { size, gridPosition, shapeBeingDrawn } = this.state
+    const { tool, size, gridPosition, shapeBeingDrawn } = this.state
     this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
@@ -370,7 +380,7 @@ class MapEditor extends React.Component {
     })
     this.updateDrawing()
     // CURSOR
-    if (gridPosition && !shapeBeingDrawn) {
+    if (tool !== 'select' && gridPosition && !shapeBeingDrawn) {
       this.ctx.fillRect(
         size * gridPosition.x,
         size * gridPosition.y,
@@ -378,7 +388,7 @@ class MapEditor extends React.Component {
         size
       )
     }
-    if (gridPosition && shapeBeingDrawn) {
+    if (tool !== 'select' && gridPosition && shapeBeingDrawn) {
       const { x, y, width, height } = computeRectangle(
         shapeBeingDrawn,
         gridPosition,
@@ -406,6 +416,13 @@ class MapEditor extends React.Component {
             <div className={styles.toolbarSection}>
               <span className={styles.title}>Tool</span>
               <div id={styles.toolButtonsContainer}>
+                <ButtonWithIcon
+                  value="select"
+                  icon="MousePointer"
+                  tooltip="Select"
+                  selected={tool === 'select'}
+                  onClick={this.handleToolChange}
+                />
                 <ButtonWithIcon
                   value="rectangle"
                   icon="Crop"
@@ -455,8 +472,8 @@ class MapEditor extends React.Component {
             ) : (
               <CheckboxList
                 title="Options"
-                ids={toolsConfig[tool].ids}
-                labels={toolsConfig[tool].labels}
+                ids={get(toolsConfig[tool], 'ids', [])}
+                labels={get(toolsConfig[tool], 'labels', [])}
                 values={toolOptions[tool]}
                 onChange={this.handleCheckboxChange}
               />
