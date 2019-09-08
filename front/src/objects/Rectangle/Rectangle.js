@@ -56,6 +56,23 @@ class Rectangle {
     return isPointInRectangle(point, this)
   }
 
+  drawBorder(ctx) {
+    const { A, B, C, D } = this
+    const prevColor = ctx.strokeStyle
+    ctx.strokeStyle = '#000000'
+    ctx.setLineDash([5, 15])
+    ctx.beginPath()
+    ctx.moveTo(A.x, A.y)
+    ctx.lineTo(B.x, B.y)
+    ctx.lineTo(C.x, C.y)
+    ctx.lineTo(D.x, D.y)
+    ctx.lineTo(A.x, A.y)
+    ctx.closePath()
+    ctx.stroke()
+    ctx.setLineDash([])
+    ctx.strokeStyle = prevColor
+  }
+
   display(ctx, useOwnColor = true) {
     const { x, y, width, height } = this
     if (useOwnColor) {

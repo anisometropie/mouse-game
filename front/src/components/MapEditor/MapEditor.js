@@ -442,7 +442,7 @@ class MapEditor extends React.Component {
       traps,
       checkpoints
     } = this.state.currentWorld
-    const { tool, size, gridPosition, shapeBeingDrawn } = this.state
+    const { tool, size, gridPosition, shapeBeingDrawn, selection } = this.state
     this.request = window.requestAnimationFrame(this.draw)
     this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
     this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
@@ -461,6 +461,9 @@ class MapEditor extends React.Component {
     })
     checkpoints.forEach(t => {
       t.display(this.ctx)
+    })
+    selection.forEach(t => {
+      t.element.drawBorder(this.ctx)
     })
     this.updateDrawing()
     // CURSOR
