@@ -97,7 +97,7 @@ class MapEditor extends React.Component {
         trapSystemSelection: null,
         groupSelection: null
       },
-      // selection: { category: '', element: null },
+      selection: [],
       size: 40,
       color: new Color(),
       path: [],
@@ -127,7 +127,8 @@ class MapEditor extends React.Component {
       'tool',
       'testMode',
       'message',
-      'trapEditor'
+      'trapEditor',
+      'selection'
     ]
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
@@ -177,15 +178,15 @@ class MapEditor extends React.Component {
 
   deleteItem = curry((category, index) => {
     const { currentWorld } = this.state
+    if (category === 'traps') {
+      currentWorld[category][index].clearLoop()
+    }
     const updatedCategory = Array.isArray(currentWorld[category])
       ? [
           ...currentWorld[category].slice(0, index),
           ...currentWorld[category].slice(index + 1)
         ]
       : null
-    if (category === 'traps') {
-      currentWorld[category][index].clearLoop()
-    }
     this.setState({
       currentWorld: {
         ...currentWorld,
@@ -223,10 +224,59 @@ class MapEditor extends React.Component {
     }
   }
 
-  mouseDown = () => {
-    const { tool, gridPosition } = this.state
+  mouseDown = event => {
+    const { tool, gridPosition, currentWorld } = this.state
     if (tool === 'select') {
-      // TODO
+      const mouse = getMousePos(this.canvas.current, event)
+      // if (currentWorld.spawn.isPointInside(mouse)) {
+      //   this.setState({
+      //     selection: [
+      //       {
+      //         category: 'spawn',
+      //         index: null,
+      //         groupIndex: null,
+      //         rectangleIndex: null,
+      //         element: currentWorld.spawn
+      //       }
+      //     ]
+      //   })
+      // }
+      const selection = Object.values(currentWorld).reduce(
+        (acc, category, index) => {
+          const categoryName = Object.keys(currentWorld)[index]
+          return Array.isArray(category)
+            ? category.length > 0
+              ? [
+                  ...acc,
+                  ...category.reduce((categoryAcc, el, categoryIndex) => {
+                    return el.isPointInside(mouse)
+                      ? [
+                          ...categoryAcc,
+                          {
+                            category: categoryName,
+                            index: categoryIndex,
+                            element: el
+                          }
+                        ]
+                      : categoryAcc
+                  }, [])
+                ]
+              : acc
+            : category !== null && category.isPointInside(mouse)
+            ? [
+                ...acc,
+                {
+                  category: 'spawn',
+                  element: category
+                }
+              ]
+            : acc
+
+          // category.groups.reduce((acc, group) => {}, [])
+        },
+        []
+      )
+      this.setState({ selection })
     } else {
       this.setState({ shapeBeingDrawn: gridPosition })
     }
@@ -331,12 +381,6 @@ class MapEditor extends React.Component {
       this.setState({ color: newColor })
     }
   }
-
-  // handleSelection = selection => {
-  //   this.setState({
-  //     selection: { element: selection, category: this.state.tool }
-  //   })
-  // }
 
   /**
    * @param {undefined|null|TrapSystem} trap

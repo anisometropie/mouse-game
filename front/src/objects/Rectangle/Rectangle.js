@@ -1,5 +1,5 @@
 import Point from 'objects/Point'
-import { circleIntersectsRectangle } from 'engine/physics'
+import { isPointInRectangle, circleIntersectsRectangle } from 'engine/physics'
 
 class Rectangle {
   constructor(x, y, width, height, color, hasCollision = false, kills = false) {
@@ -50,6 +50,10 @@ class Rectangle {
     }
 
     return false
+  }
+
+  isPointInside(point) {
+    return isPointInRectangle(point, this)
   }
 
   display(ctx, useOwnColor = true) {
