@@ -228,40 +228,53 @@ class MapEditor extends React.Component {
     const { tool, gridPosition, currentWorld } = this.state
     if (tool === 'select') {
       const mouse = getMousePos(this.canvas.current, event)
-      // if (currentWorld.spawn.isPointInside(mouse)) {
-      //   this.setState({
-      //     selection: [
-      //       {
-      //         category: 'spawn',
-      //         index: null,
-      //         groupIndex: null,
-      //         rectangleIndex: null,
-      //         element: currentWorld.spawn
-      //       }
-      //     ]
-      //   })
-      // }
       const selection = Object.values(currentWorld).reduce(
         (acc, category, index) => {
           const categoryName = Object.keys(currentWorld)[index]
           return Array.isArray(category)
-            ? category.length > 0
-              ? [
-                  ...acc,
-                  ...category.reduce((categoryAcc, el, categoryIndex) => {
-                    return el.isPointInside(mouse)
-                      ? [
-                          ...categoryAcc,
-                          {
-                            category: categoryName,
-                            index: categoryIndex,
-                            element: el
-                          }
-                        ]
-                      : categoryAcc
-                  }, [])
-                ]
-              : acc
+            ? [
+                ...acc,
+                ...category.reduce((categoryAcc, el, categoryIndex) => {
+                  return has(el, 'groups')
+                    ? // TRAP SYSTEM
+                      [
+                        ...categoryAcc,
+                        ...el.groups.reduce((groupAcc, group, groupIndex) => {
+                          return [
+                            ...groupAcc,
+                            ...group.traps.reduce(
+                              (rectangleAcc, rectangle, rectangleIndex) => {
+                                return rectangle.isPointInside(mouse)
+                                  ? [
+                                      ...rectangleAcc,
+                                      {
+                                        category: categoryName,
+                                        index: categoryIndex,
+                                        groupIndex: groupIndex,
+                                        rectangleIndex: rectangleIndex,
+                                        element: rectangle
+                                      }
+                                    ]
+                                  : rectangleAcc
+                              },
+                              []
+                            )
+                          ]
+                        }, [])
+                      ]
+                    : // SIMPLY AN ARRAY
+                    el.isPointInside(mouse)
+                    ? [
+                        ...categoryAcc,
+                        {
+                          category: categoryName,
+                          index: categoryIndex,
+                          element: el
+                        }
+                      ]
+                    : categoryAcc
+                }, [])
+              ]
             : category !== null && category.isPointInside(mouse)
             ? [
                 ...acc,
