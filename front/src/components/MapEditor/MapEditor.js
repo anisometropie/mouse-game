@@ -28,24 +28,51 @@ import styles from './MapEditor.css'
 export const WIDTH = 1000
 export const HEIGHT = 800
 
-const toolsConfig = {
+const buttons = {
+  select: {
+    value: 'select',
+    icon: 'MousePointer',
+    tooltip: 'Select',
+    config: {}
+  },
   rectangle: {
-    ids: ['isMovable', 'color', 'hasCollision', 'kills', 'path', 'velocity'],
-    labels: ['Movable', 'Color', 'Collision', 'Kills', 'Path', 'Velocity']
+    value: 'rectangle',
+    icon: 'Crop',
+    tooltip: 'Rectangle',
+    config: {
+      ids: ['isMovable', 'color', 'hasCollision', 'kills', 'path', 'velocity'],
+      labels: ['Movable', 'Color', 'Collision', 'Kills', 'Path', 'Velocity']
+    }
   },
   spawn: {
-    ids: ['isMovable', 'color', 'path', 'velocity'],
-    labels: ['Movable', 'Color', 'Path', 'Velocity']
+    value: 'spawn',
+    icon: 'Target',
+    tooltip: 'Spawn',
+    config: {
+      ids: ['isMovable', 'color', 'path', 'velocity'],
+      labels: ['Movable', 'Color', 'Path', 'Velocity']
+    }
   },
   checkpoint: {
-    ids: ['isMovable', 'color', 'path', 'velocity'],
-    labels: ['Movable', 'Color', 'Path', 'Velocity']
+    value: 'checkpoint',
+    icon: 'UserCheck',
+    tooltip: 'Checkpoint',
+    config: {
+      ids: ['isMovable', 'color', 'path', 'velocity'],
+      labels: ['Movable', 'Color', 'Path', 'Velocity']
+    }
   },
   trap: {
-    ids: ['isMovable', 'color', 'kills', 'path', 'velocity'],
-    labels: ['Movable', 'Color', 'Kills', 'Path', 'Velocity']
+    value: 'trap',
+    icon: 'XSquare',
+    tooltip: 'Trap',
+    config: {
+      ids: ['isMovable', 'color', 'kills', 'path', 'velocity'],
+      labels: ['Movable', 'Color', 'Kills', 'Path', 'Velocity']
+    }
   }
 }
+
 class MapEditor extends React.Component {
   constructor(props) {
     super(props)
@@ -409,49 +436,26 @@ class MapEditor extends React.Component {
       selection,
       trapEditor
     } = this.state
+    const buttonComponents = Object.values(buttons).map(button => {
+      const { value, icon, tooltip } = button
+      return (
+        <ButtonWithIcon
+          key={value}
+          value={value}
+          icon={icon}
+          tooltip={tooltip}
+          selected={tool === value}
+          onClick={this.handleToolChange}
+        />
+      )
+    })
     return (
       <div id={styles.editorMainContainer}>
         <div id={styles.leftBar}>
           <div id={styles.toolBar}>
             <div className={styles.toolbarSection}>
               <span className={styles.title}>Tool</span>
-              <div id={styles.toolButtonsContainer}>
-                <ButtonWithIcon
-                  value="select"
-                  icon="MousePointer"
-                  tooltip="Select"
-                  selected={tool === 'select'}
-                  onClick={this.handleToolChange}
-                />
-                <ButtonWithIcon
-                  value="rectangle"
-                  icon="Crop"
-                  tooltip="Rectangle"
-                  selected={tool === 'rectangle'}
-                  onClick={this.handleToolChange}
-                />
-                <ButtonWithIcon
-                  value="spawn"
-                  icon="Target"
-                  tooltip="Spawn"
-                  selected={tool === 'spawn'}
-                  onClick={this.handleToolChange}
-                />
-                <ButtonWithIcon
-                  value="checkpoint"
-                  icon="UserCheck"
-                  tooltip="Checkpoint"
-                  selected={tool === 'checkpoint'}
-                  onClick={this.handleToolChange}
-                />
-                <ButtonWithIcon
-                  value="trap"
-                  icon="XSquare"
-                  tooltip="Trap"
-                  selected={tool === 'trap'}
-                  onClick={this.handleToolChange}
-                />
-              </div>
+              <div id={styles.toolButtonsContainer}>{buttonComponents}</div>
             </div>
             <ColorPicker
               value={color.hexString}
@@ -472,8 +476,8 @@ class MapEditor extends React.Component {
             ) : (
               <CheckboxList
                 title="Options"
-                ids={get(toolsConfig[tool], 'ids', [])}
-                labels={get(toolsConfig[tool], 'labels', [])}
+                ids={get(buttons[tool].config, 'ids', [])}
+                labels={get(buttons[tool].config, 'labels', [])}
                 values={toolOptions[tool]}
                 onChange={this.handleCheckboxChange}
               />
