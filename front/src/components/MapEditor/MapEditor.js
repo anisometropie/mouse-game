@@ -571,7 +571,8 @@ class MapEditor extends React.Component {
             id={styles.canvas}
             style={{
               width: `${this.width}px`,
-              height: `${this.height}px`
+              height: `${this.height}px`,
+              border: 'solid 2px black'
             }}
             width={this.width * pixelRatio}
             height={this.height * pixelRatio}

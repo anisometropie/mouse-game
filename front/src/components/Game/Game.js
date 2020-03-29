@@ -130,7 +130,8 @@ class Game extends React.Component {
           id="canvas"
           style={{
             width: `${this.width}px`,
-            height: `${this.height}px`
+            height: `${this.height}px`,
+            border: '2px solid black'
           }}
           width={this.width * pixelRatio}
           height={this.height * pixelRatio}
