@@ -1,4 +1,5 @@
 import { rgbToHex } from 'utils/colors'
+import { pixelRatio } from 'utils/canvas'
 
 import Point from 'objects/Point'
 import Vector from 'objects/Vector'
@@ -45,15 +46,21 @@ class Circle {
   display(ctx, withName = false) {
     const { red, green, blue } = this.color
     ctx.beginPath()
-    ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2)
+    ctx.arc(
+      this.center.x * pixelRatio,
+      this.center.y * pixelRatio,
+      this.radius * pixelRatio,
+      0,
+      Math.PI * 2
+    )
     ctx.fillStyle = rgbToHex(red, green, blue)
     ctx.fill()
     ctx.closePath()
     if (withName) {
       ctx.fillText(
         this.name,
-        this.center.x + this.radius,
-        this.center.y + this.radius * 1.5
+        (this.center.x + this.radius) * pixelRatio,
+        (this.center.y + this.radius * 1.5) * pixelRatio
       )
     }
   }

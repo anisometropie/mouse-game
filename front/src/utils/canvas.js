@@ -10,6 +10,6 @@ export function getMousePos(canvas, evt) {
   }
 }
 
-export function pixelToGrid(point, ratio) {
-  return mapValues(point, n => Math.floor(n / ratio))
+export function pixelToGrid(point, size) {
+  return mapValues(point, n => Math.floor(n / size))
 }

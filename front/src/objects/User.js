@@ -1,4 +1,5 @@
 import Circle from 'objects/Circle'
+import { pixelRatio } from 'utils/canvas'
 
 class User extends Circle {
   constructor(x, y, radius = 12, color, name, spawnPoint) {
@@ -13,7 +14,7 @@ class User extends Circle {
 
   showCoords(ctx) {
     const { x, y } = this.center
-    ctx.fillText(`${x} ${y}`, x + 12, y + 12)
+    ctx.fillText(`${x} ${y}`, (x + 12) * pixelRatio, (y + 12) * pixelRatio)
   }
 
   kill() {

@@ -1,5 +1,6 @@
 import Point from 'objects/Point'
 import { isPointInRectangle, circleIntersectsRectangle } from 'engine/physics'
+import { pixelRatio } from 'utils/canvas'
 
 class Rectangle {
   constructor(x, y, width, height, color, hasCollision = false, kills = false) {
@@ -60,13 +61,13 @@ class Rectangle {
     const { A, B, C, D } = this
     const prevColor = ctx.strokeStyle
     ctx.strokeStyle = '#000000'
-    ctx.setLineDash([5, 15])
+    ctx.setLineDash([5 * pixelRatio, 15 * pixelRatio])
     ctx.beginPath()
-    ctx.moveTo(A.x, A.y)
-    ctx.lineTo(B.x, B.y)
-    ctx.lineTo(C.x, C.y)
-    ctx.lineTo(D.x, D.y)
-    ctx.lineTo(A.x, A.y)
+    ctx.moveTo(A.x * pixelRatio, A.y * pixelRatio)
+    ctx.lineTo(B.x * pixelRatio, B.y * pixelRatio)
+    ctx.lineTo(C.x * pixelRatio, C.y * pixelRatio)
+    ctx.lineTo(D.x * pixelRatio, D.y * pixelRatio)
+    ctx.lineTo(A.x * pixelRatio, A.y * pixelRatio)
     ctx.closePath()
     ctx.stroke()
     ctx.setLineDash([])
@@ -82,7 +83,12 @@ class Rectangle {
         ? 'red'
         : '#000000'
     }
-    ctx.fillRect(x, y, width, height)
+    ctx.fillRect(
+      x * pixelRatio,
+      y * pixelRatio,
+      width * pixelRatio,
+      height * pixelRatio
+    )
   }
 }
 

@@ -23,8 +23,8 @@ import Point from 'objects/Point'
 import User from 'objects/User'
 import TrapSystem from 'objects/TrapSystem'
 
-export const WIDTH = window.innerWidth
-export const HEIGHT = window.innerHeight
+export const WIDTH = 1200
+export const HEIGHT = 800
 
 class Game extends React.Component {
   constructor(props) {
@@ -41,6 +41,8 @@ class Game extends React.Component {
       world.spawn
     )
     this.canvas = React.createRef()
+    this.width = WIDTH
+    this.height = HEIGHT
     this.ctx = null
   }
 
@@ -50,6 +52,7 @@ class Game extends React.Component {
       openConnection(this.user, this.users)
     }
     this.ctx = this.canvas.current.getContext('2d')
+    this.ctx.font = `${pixelRatio * 10}px sans-serif`
     setPointerLock(this.canvas.current, this.mouseMoved)
     this.request = window.requestAnimationFrame(this.draw)
   }
@@ -81,8 +84,8 @@ class Game extends React.Component {
   draw = () => {
     const { spawn, walls, movableWalls, traps, checkpoints } = this.currentWorld
     this.request = window.requestAnimationFrame(this.draw)
-    this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
-    this.ctx.fillText(fpsCounter.fps, 1000, 20)
+    this.ctx.clearRect(0, 0, this.width * pixelRatio, this.height * pixelRatio)
+    this.ctx.fillText(fpsCounter.fps, 1000 * pixelRatio, 20 * pixelRatio)
     spawn.display(this.ctx)
     walls.forEach(w => {
       if (w.hasCollision && resolveCollisionCircleRectangle(this.user, w)) {
@@ -111,6 +114,7 @@ class Game extends React.Component {
       }
     })
     this.user.display(this.ctx, false)
+    this.user.showCoords(this.ctx, false)
     Object.values(this.users)
       .filter(u => u.id !== this.user.id)
       .forEach(u => {
@@ -121,7 +125,16 @@ class Game extends React.Component {
   render() {
     return (
       <>
-        <canvas ref={this.canvas} id="canvas" width={WIDTH} height={HEIGHT} />
+        <canvas
+          ref={this.canvas}
+          id="canvas"
+          style={{
+            width: `${this.width}px`,
+            height: `${this.height}px`
+          }}
+          width={this.width * pixelRatio}
+          height={this.height * pixelRatio}
+        />
       </>
     )
   }

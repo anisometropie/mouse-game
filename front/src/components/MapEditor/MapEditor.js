@@ -25,8 +25,7 @@ import { loadMap } from 'utils/maps'
 
 import styles from './MapEditor.css'
 
-export const WIDTH = 1000
-export const HEIGHT = 800
+import { WIDTH, HEIGHT } from '../Game'
 
 const buttons = {
   select: {
@@ -107,12 +106,15 @@ class MapEditor extends React.Component {
       message: ''
     }
     this.canvas = React.createRef()
+    this.width = WIDTH
+    this.height = HEIGHT
     this.ctx = null
   }
 
   componentDidMount() {
     window.onmouseup = this.mouseUp
     this.ctx = this.canvas.current.getContext('2d')
+    this.ctx.font = `${pixelRatio * 10}px sans-serif`
     this.request = window.requestAnimationFrame(this.draw)
   }
 
@@ -444,8 +446,12 @@ class MapEditor extends React.Component {
     } = this.state.currentWorld
     const { tool, size, gridPosition, shapeBeingDrawn, selection } = this.state
     this.request = window.requestAnimationFrame(this.draw)
-    this.ctx.clearRect(0, 0, WIDTH, HEIGHT)
-    this.ctx.fillText(fpsCounter.fps, WIDTH - 40, 20)
+    this.ctx.clearRect(0, 0, this.width * pixelRatio, this.height * pixelRatio)
+    this.ctx.fillText(
+      fpsCounter.fps,
+      (this.width - 40) * pixelRatio,
+      20 * pixelRatio
+    )
     if (spawn) spawn.display(this.ctx)
     walls.forEach(w => {
       w.display(this.ctx)
@@ -469,10 +475,10 @@ class MapEditor extends React.Component {
     // CURSOR
     if (tool !== 'select' && gridPosition && !shapeBeingDrawn) {
       this.ctx.fillRect(
-        size * gridPosition.x,
-        size * gridPosition.y,
-        size,
-        size
+        size * gridPosition.x * pixelRatio,
+        size * gridPosition.y * pixelRatio,
+        size * pixelRatio,
+        size * pixelRatio
       )
     }
     if (tool !== 'select' && gridPosition && shapeBeingDrawn) {
@@ -481,7 +487,12 @@ class MapEditor extends React.Component {
         gridPosition,
         size
       )
-      this.ctx.fillRect(x, y, width, height)
+      this.ctx.fillRect(
+        x * pixelRatio,
+        y * pixelRatio,
+        width * pixelRatio,
+        height * pixelRatio
+      )
     }
   }
 
@@ -558,8 +569,12 @@ class MapEditor extends React.Component {
             onMouseUp={this.mouseUp}
             ref={this.canvas}
             id={styles.canvas}
-            width={WIDTH}
-            height={HEIGHT}
+            style={{
+              width: `${this.width}px`,
+              height: `${this.height}px`
+            }}
+            width={this.width * pixelRatio}
+            height={this.height * pixelRatio}
           />
         )}
       </div>
