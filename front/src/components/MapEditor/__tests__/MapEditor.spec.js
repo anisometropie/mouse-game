@@ -385,198 +385,206 @@ describe('map editor component', () => {
     })
   })
 
-  describe.only('selecting rectangle on the canvas', () => {
-    describe('selecting spawn', () => {
-      it('should be able to select spawn by clicking on it', () => {
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 15,
-            y: 15
-          }
+  describe('selecting rectangle on the canvas', () => {
+    describe('unique entities', () => {
+      describe('selecting spawn', () => {
+        it('should be able to select spawn by clicking on it', () => {
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 15,
+              y: 15
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          wrapper.setState({ tool: 'select' })
+          const instance = wrapper.instance()
+          const spawn = new RectangleBuilder(10, 10, 10, 10).build()
+          instance.addItem('spawn', spawn)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([
+            {
+              category: 'spawn',
+              element: spawn
+            }
+          ])
         })
-        const wrapper = mount(<MapEditor />)
-        wrapper.setState({ tool: 'select' })
-        const instance = wrapper.instance()
-        const spawn = new RectangleBuilder(10, 10, 10, 10).build()
-        instance.addItem('spawn', spawn)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([
-          {
-            category: 'spawn',
-            element: spawn
-          }
-        ])
-      })
-      it('should not select spawn if click somewhere else', () => {
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 100,
-            y: 15
-          }
+        it('should not select spawn if click somewhere else', () => {
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 100,
+              y: 15
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          wrapper.setState({ tool: 'select' })
+          const instance = wrapper.instance()
+          const spawn = new RectangleBuilder(10, 10, 10, 10).build()
+          instance.addItem('spawn', spawn)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([])
         })
-        const wrapper = mount(<MapEditor />)
-        wrapper.setState({ tool: 'select' })
-        const instance = wrapper.instance()
-        const spawn = new RectangleBuilder(10, 10, 10, 10).build()
-        instance.addItem('spawn', spawn)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([])
       })
     })
     describe('selecting something in an array of currentWorld', () => {
-      it('should be able to select a rectangle by clicking on it', () => {
-        const rectangle = new RectangleBuilder(100, 100, 40, 40).build()
-        const category = 'walls'
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 130,
-            y: 110
-          }
+      describe('rectangle', () => {
+        it('should be able to select a rectangle by clicking on it', () => {
+          const rectangle = new RectangleBuilder(100, 100, 40, 40).build()
+          const category = 'walls'
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 130,
+              y: 110
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          const instance = wrapper.instance()
+          wrapper.setState({ tool: 'select' })
+          instance.addItem(category, rectangle)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([
+            {
+              category: 'walls',
+              index: 0,
+              element: rectangle
+            }
+          ])
         })
-        const wrapper = mount(<MapEditor />)
-        const instance = wrapper.instance()
-        wrapper.setState({ tool: 'select' })
-        instance.addItem(category, rectangle)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([
-          {
-            category: 'walls',
-            index: 0,
-            element: rectangle
-          }
-        ])
+        it('should return all corresponding rectangle in an array', () => {
+          const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
+          const rectangle2 = new RectangleBuilder(150, 100, 100, 100).build()
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 175,
+              y: 150
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          const instance = wrapper.instance()
+          wrapper.setState({ tool: 'select' })
+          instance.addItem('walls', rectangle)
+          instance.addItem('checkpoints', rectangle2)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([
+            {
+              category: 'walls',
+              index: 0,
+              element: rectangle
+            },
+            {
+              category: 'checkpoints',
+              index: 0,
+              element: rectangle2
+            }
+          ])
+        })
+        it('should return empty array if no rectangle is found', () => {
+          const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
+          const rectangle2 = new RectangleBuilder(250, 100, 100, 100).build()
+          const category = 'walls'
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 225,
+              y: 150
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          const instance = wrapper.instance()
+          wrapper.setState({ tool: 'select' })
+          instance.addItem(category, rectangle)
+          instance.addItem(category, rectangle2)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([])
+        })
       })
-      it('should return all corresponding rectangle in an array', () => {
-        const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
-        const rectangle2 = new RectangleBuilder(150, 100, 100, 100).build()
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 175,
-            y: 150
-          }
+      describe('trap system', () => {
+        it('should be able to select rectangle in a trap system', () => {
+          const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
+          const trapSystem = new TrapSystem()
+          trapSystem.addGroup()
+          trapSystem.addRectangle(0, rectangle)
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 150,
+              y: 150
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          const instance = wrapper.instance()
+          wrapper.setState({ tool: 'select' })
+          instance.addItem('traps', trapSystem)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([
+            {
+              category: 'traps',
+              index: 0,
+              groupIndex: 0,
+              rectangleIndex: 0,
+              element: rectangle
+            }
+          ])
         })
-        const wrapper = mount(<MapEditor />)
-        const instance = wrapper.instance()
-        wrapper.setState({ tool: 'select' })
-        instance.addItem('walls', rectangle)
-        instance.addItem('checkpoints', rectangle2)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([
-          {
-            category: 'walls',
-            index: 0,
-            element: rectangle
-          },
-          {
-            category: 'checkpoints',
-            index: 0,
-            element: rectangle2
-          }
-        ])
       })
-      it('should return empty array if no rectangle is found', () => {
-        const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
-        const rectangle2 = new RectangleBuilder(250, 100, 100, 100).build()
-        const category = 'walls'
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 225,
-            y: 150
-          }
+      describe('all at once', () => {
+        it('should be able to select rectangle in all categories', () => {
+          const rectangle1 = new RectangleBuilder(100, 100, 101, 100).build()
+          const rectangle2 = new RectangleBuilder(100, 100, 102, 100).build()
+          const rectangle3 = new RectangleBuilder(100, 100, 103, 100).build()
+          const rectangle4 = new RectangleBuilder(100, 100, 104, 100).build()
+          const rectangle5 = new RectangleBuilder(100, 100, 105, 100).build()
+          const trapSystem = new TrapSystem()
+          trapSystem.addGroup()
+          trapSystem.addRectangle(0, rectangle5)
+          canvas.getMousePos = jest.fn(() => {
+            return {
+              x: 150,
+              y: 150
+            }
+          })
+          const wrapper = mount(<MapEditor />)
+          const instance = wrapper.instance()
+          wrapper.setState({ tool: 'select' })
+          instance.addItem('spawn', rectangle1)
+          instance.addItem('walls', rectangle2)
+          instance.addItem('movableWalls', rectangle3)
+          instance.addItem('checkpoints', rectangle4)
+          instance.addItem('traps', trapSystem)
+          instance.mouseDown()
+          const state = wrapper.state()
+          expect(state.selection).toEqual([
+            {
+              category: 'spawn',
+              element: rectangle1
+            },
+            {
+              category: 'walls',
+              index: 0,
+              element: rectangle2
+            },
+            {
+              category: 'movableWalls',
+              index: 0,
+              element: rectangle3
+            },
+            {
+              category: 'traps',
+              index: 0,
+              groupIndex: 0,
+              rectangleIndex: 0,
+              element: rectangle5
+            },
+            {
+              category: 'checkpoints',
+              index: 0,
+              element: rectangle4
+            }
+          ])
         })
-        const wrapper = mount(<MapEditor />)
-        const instance = wrapper.instance()
-        wrapper.setState({ tool: 'select' })
-        instance.addItem(category, rectangle)
-        instance.addItem(category, rectangle2)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([])
-      })
-      it('should be able to select rectangle in a trap system', () => {
-        const rectangle = new RectangleBuilder(100, 100, 100, 100).build()
-        const trapSystem = new TrapSystem()
-        trapSystem.addGroup()
-        trapSystem.addRectangle(0, rectangle)
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 150,
-            y: 150
-          }
-        })
-        const wrapper = mount(<MapEditor />)
-        const instance = wrapper.instance()
-        wrapper.setState({ tool: 'select' })
-        instance.addItem('traps', trapSystem)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([
-          {
-            category: 'traps',
-            index: 0,
-            groupIndex: 0,
-            rectangleIndex: 0,
-            element: rectangle
-          }
-        ])
-      })
-      it('should be able to select rectangle in all categories', () => {
-        const rectangle1 = new RectangleBuilder(100, 100, 101, 100).build()
-        const rectangle2 = new RectangleBuilder(100, 100, 102, 100).build()
-        const rectangle3 = new RectangleBuilder(100, 100, 103, 100).build()
-        const rectangle4 = new RectangleBuilder(100, 100, 104, 100).build()
-        const rectangle5 = new RectangleBuilder(100, 100, 105, 100).build()
-        const trapSystem = new TrapSystem()
-        trapSystem.addGroup()
-        trapSystem.addRectangle(0, rectangle5)
-        canvas.getMousePos = jest.fn(() => {
-          return {
-            x: 150,
-            y: 150
-          }
-        })
-        const wrapper = mount(<MapEditor />)
-        const instance = wrapper.instance()
-        wrapper.setState({ tool: 'select' })
-        instance.addItem('spawn', rectangle1)
-        instance.addItem('walls', rectangle2)
-        instance.addItem('movableWalls', rectangle3)
-        instance.addItem('checkpoints', rectangle4)
-        instance.addItem('traps', trapSystem)
-        instance.mouseDown()
-        const state = wrapper.state()
-        expect(state.selection).toEqual([
-          {
-            category: 'spawn',
-            element: rectangle1
-          },
-          {
-            category: 'walls',
-            index: 0,
-            element: rectangle2
-          },
-          {
-            category: 'movableWalls',
-            index: 0,
-            element: rectangle3
-          },
-          {
-            category: 'traps',
-            index: 0,
-            groupIndex: 0,
-            rectangleIndex: 0,
-            element: rectangle5
-          },
-          {
-            category: 'checkpoints',
-            index: 0,
-            element: rectangle4
-          }
-        ])
       })
     })
   })
