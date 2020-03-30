@@ -94,9 +94,15 @@ class MapEditor extends React.Component {
       tool: 'rectangle',
       toolOptions: {
         select: {},
-        rectangle: {},
-        spawn: {},
-        checkpoint: {},
+        rectangle: {
+          hasCollision: true
+        },
+        spawn: {
+          color: true
+        },
+        checkpoint: {
+          color: true
+        },
         trap: {}
       },
       trapEditor: {
@@ -105,7 +111,12 @@ class MapEditor extends React.Component {
       },
       selection: [],
       size: 40,
-      color: { global: new Color(), ...buttonsWithColor },
+      color: {
+        global: new Color(),
+        rectangle: new Color(),
+        spawn: new Color('#FFEB3B'),
+        checkpoint: new Color('#03A9F4')
+      },
       path: [],
       velocity: 0,
       shapeBeingDrawn: null,
