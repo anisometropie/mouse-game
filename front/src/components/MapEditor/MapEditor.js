@@ -1,5 +1,5 @@
 import React from 'react'
-import _, { has, get, isArray, isEmpty, curry } from 'lodash'
+import _, { has, get, isArray, isEmpty, curry, includes } from 'lodash'
 
 import { fpsCounter } from 'utils/FpsCounter'
 import { setPointerLock } from 'engine/pointerLock'
@@ -66,11 +66,18 @@ const buttons = {
     icon: 'XSquare',
     tooltip: 'Trap',
     config: {
-      ids: ['isMovable', 'color', 'kills', 'path', 'velocity'],
-      labels: ['Movable', 'Color', 'Kills', 'Path', 'Velocity']
+      ids: ['isMovable', 'kills', 'path', 'velocity'],
+      labels: ['Movable', 'Kills', 'Path', 'Velocity']
     }
   }
 }
+const buttonsWithColor = Object.fromEntries(
+  Object.entries(buttons)
+    .map(b =>
+      includes(b[1].config.ids, 'color') ? [b[0], new Color()] : undefined
+    )
+    .filter(c => c !== undefined)
+)
 
 class MapEditor extends React.Component {
   constructor(props) {
@@ -98,7 +105,7 @@ class MapEditor extends React.Component {
       },
       selection: [],
       size: 40,
-      color: new Color(),
+      color: { global: new Color(), ...buttonsWithColor },
       path: [],
       velocity: 0,
       shapeBeingDrawn: null,
@@ -130,7 +137,8 @@ class MapEditor extends React.Component {
       'testMode',
       'message',
       'trapEditor',
-      'selection'
+      'selection',
+      'color'
     ]
     return stateKeys.reduce(
       (acc, key) => acc || nextState[key] !== this.state[key],
@@ -304,13 +312,16 @@ class MapEditor extends React.Component {
       size,
       tool,
       toolOptions,
+      color,
       gridPosition,
       shapeBeingDrawn
     } = this.state
     if (shapeBeingDrawn) {
+      const colorToUse = toolOptions[tool].color ? color[tool] : color.global
       const options = {
         ...computeRectangle(shapeBeingDrawn, gridPosition, size),
-        ...toolOptions[tool]
+        ...toolOptions[tool],
+        color: colorToUse
       }
       const category =
         tool === 'rectangle'
@@ -370,7 +381,7 @@ class MapEditor extends React.Component {
           ...toolOptions,
           [tool]: {
             ...toolOptions[tool],
-            [id]: get(this.state, id, true)
+            [id]: true
           }
         }
       })
@@ -381,20 +392,9 @@ class MapEditor extends React.Component {
     this.setState({ tool: value })
   }
 
-  handleColorChange = color => {
-    const { tool, toolOptions } = this.state
+  handleColorChange = (category, color) => {
     const newColor = new Color(color)
-    if (toolOptions[tool].color) {
-      this.setState({
-        color: newColor,
-        toolOptions: {
-          ...toolOptions,
-          [tool]: { ...toolOptions[tool], color: newColor }
-        }
-      })
-    } else {
-      this.setState({ color: newColor })
-    }
+    this.setState({ color: { ...this.state.color, [category]: newColor } })
   }
 
   /**
@@ -427,12 +427,11 @@ class MapEditor extends React.Component {
   }
 
   updateDrawing = () => {
-    const { tool, toolOptions } = this.state
-    const { color } = toolOptions[tool]
-    if (color) {
-      this.ctx.fillStyle = color.hexString
+    const { tool, toolOptions, color } = this.state
+    if (toolOptions[tool].color) {
+      this.ctx.fillStyle = color[tool].hexString
     } else {
-      this.ctx.fillStyle = 'black'
+      this.ctx.fillStyle = color.global.hexString
     }
   }
 
@@ -528,11 +527,27 @@ class MapEditor extends React.Component {
               <span className={styles.title}>Tool</span>
               <div id={styles.toolButtonsContainer}>{buttonComponents}</div>
             </div>
-            <ColorPicker
-              value={color.hexString}
-              noTextField
-              onChangeComplete={this.handleColorChange}
-            />
+
+            <div className={styles.colorPickerContainer}>
+              <ColorPicker
+                value={color.global.hexString}
+                noTextField
+                onChangeComplete={c => this.handleColorChange('global', c)}
+              />
+              <div>General</div>
+            </div>
+
+            {includes(buttons[tool].config.ids, 'color') && (
+              <div className={styles.colorPickerContainer}>
+                <ColorPicker
+                  value={get(color[tool], 'hexString', new Color())}
+                  noTextField
+                  onChangeComplete={c => this.handleColorChange(tool, c)}
+                />
+                <div>Tool</div>
+              </div>
+            )}
+
             {tool === 'trap' ? (
               <TrapEditor
                 list={currentWorld.traps}

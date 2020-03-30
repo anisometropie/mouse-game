@@ -46,3 +46,10 @@
 .message {
   font-size: 0.8em;
 }
+
+.colorPickerContainer {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

@@ -18,9 +18,15 @@ export default class ColorPicker extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { value } = this.props
     const { color, isBeingEdited } = this.state
     if (isBeingEdited) {
       this.pickerRef.current.focus()
+    }
+    if (value !== prevProps.value) {
+      this.setState({
+        color: value
+      })
     }
   }
 
